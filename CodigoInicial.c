@@ -1,10 +1,22 @@
+//Código principal para o trabalho final da disciplina de Algoritmos e Programação
+//João Pedro Porto Pires de Oliveira e Théo Santiago muller.
+
+/*
+Primeira Atualização de 29/04/2018
+Nesse codigo crio e inicializo o que deve ser a versão inicial do jogo. 
+Crio randomicamente as chaves (a função coloca posições para a chave que excedem o maximo das molduras, ajeitar isso depois).
+A função de movimentação do personagem está completa, além de parar o jogo se o jogador pressionar a tecla 'ESC'. 
+As informações do jogador aparecem na tela, embora o contador de chaves ainda não funcione. 
+Falta criar o sistema de menu, dificuldade, guardas, etc.
+*/
+
+//Incluo as bibliotecas
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio2.h>
 #include <string.h>
 
 //Espaco reservado para constantes
-
 #define MAXX 80
 #define MAXY 24
 #define NOME 20
@@ -12,8 +24,8 @@
 #define VALOR_MAXIMO_RANDY 15
 #define NUMCHAVES 4
 
-//Aqui eu declaro uma variavel global, que eu sei que nao deveria fazer
-//mas eu realmente nao sei como fazer se nao for assim. ISSO TA ERRADO.
+/* Aqui eu declaro uma variavel global, que eu sei que nao deveria fazer
+mas eu realmente nao sei como fazer se nao for assim. ISSO TA ERRADO. */
 int chavesColetadas = 0;
 
 //Funcao para a moldura
@@ -40,6 +52,7 @@ void moldura(int limite)
     }
 }
 
+//Função para o movimento do personagem
 void movimentoPersonagem(void)
 {
     char ch;
@@ -110,7 +123,7 @@ void movimentoPersonagem(void)
 
 }
 
-
+//Função que cria as chaves
 void chaves(void)
 {
     char chave[NUMCHAVES];

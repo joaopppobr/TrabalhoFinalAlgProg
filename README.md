@@ -8,13 +8,12 @@ Deverá ser desenvolvido o jogo “Resgate o ogro”. O usuário controla um
 e fugindo de guardas inimigos para regatar o ogro da prisão. O objetivo do jogo é
 coletar 3 chaves para abrir a prisão onde o ogro se encontra, sem ser eliminado
 pelos guardas que se movimentam aleatoriamente no cenário. 
+
 O cenário do jogo será implementado em modo texto. Inclui a área de movimento
 entre as coordenadas 2 a 23 (linha) e 2 e 78 (coluna) e a área de informação na
 linha 25. Veja exemplo na Figura 1. Uma moldura nas linhas 1 e 24 e as colunas 1
-e 80 circunda a área do jogo e limita o movimento dos elementos do jogo. As cores
-e representação dos elementos do jogo são de escolha dos alunos, porém esperase
-que estejam bem posicionadas, alinhadas e com cores de fácil visualização.
-Evitem o uso da cor vermelha, porque os projetores não diferenciam esta cor.
+e 80 circunda a área do jogo e limita o movimento dos elementos do jogo. 
+
 O jogo deve ter, no mínimo, dois níveis de dificuldade. Além das dificuldades
 mencionadas abaixo para o nível 2, outras podem ser criadas pelos alunos.
 
@@ -62,7 +61,7 @@ da área de jogo. Quando as chaves são levadas até lá pelo jogador, as parede
 desaparecem, libertando o ogro.
 A Torre pode ser implementada na forma que os alunos desejarem.
 
-#Área de informação: 
+Área de informação: 
 A linha na base do cenário mostra:
 - o nome do jogador, instanciado no inicio do jogo, ou carregado do arquivo;
 - o numero de vidas restantes, inciando em 3;

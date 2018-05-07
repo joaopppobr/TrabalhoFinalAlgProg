@@ -146,7 +146,7 @@ void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, i
         *vidas -= 1;
         desenha_placar(nomeJogador, chavesColetadas, *vidas);
 
-          if (*jogador_x <= MAXX - 2)
+        if (*jogador_x <= MAXX - 2)
         {
             *jogador_x-= 2;
         }
@@ -169,23 +169,29 @@ void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, i
 
 
 }
+
+
 int main()
 {
-
+    srand(time(NULL));
     int ch;
     int tecla;
     int vidas = 3;
     int chavesColetadas = 0;
     char nomeJogador[NOME];
-    int jogador_x = 5;
-    int jogador_y = 5;
-    int guarda_x = MAXX- 5;
+    int jogador_x = 4;
+    int jogador_y = 4;
+    int guarda_x = MAXX - 5;
     int guarda_y = MAXY - 5;
+
+    jogador_x = rand() % (MAXX - 2);
+    jogador_y = rand() % (MAXY + 2);
+    guarda_x = rand() % (MAXX - 2);
+    guarda_y = rand() % (MAXY + 2);
 
     puts("Insira o nome do jogador");
     gets(nomeJogador);
     clrscr();
-
 
     desenha_cenario(MAXX, MAXY);
     desenha_placar(nomeJogador, chavesColetadas, vidas);
@@ -201,7 +207,6 @@ int main()
             tecla = getch();
             movimenta_jogador(&jogador_x, &jogador_y, tecla);
         }
-
 
     }
     while(vidas > 0 && ch != 27);

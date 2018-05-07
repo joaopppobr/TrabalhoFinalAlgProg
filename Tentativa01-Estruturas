@@ -11,7 +11,8 @@
 #define VALOR_MAXIMO_RANDX 70
 #define VALOR_MAXIMO_RANDY 15
 #define NUMCHAVES 4
-
+#define NUMPAREDES 2
+#define COORDENADAS 2
 void desenha_cenario(limitex, limitey)
 {
     int i=0;
@@ -177,6 +178,8 @@ struct Jogador
     int vidas;
     int chavesColetadas;
     char nomeJogador[NOME];
+    float tempoDeJogo;
+
 };
 
 struct Guarda
@@ -184,14 +187,28 @@ struct Guarda
     int guarda_x;
     int guarda_y;
 };
+
+struct Chaves
+{
+    char simboloChave;
+    int chave_x, chave_y;
+    char status;
+    int chave[NUMCHAVES];
+};
+
+struct Paredes
+{
+    int coordenada[NUMPAREDES][COORDENADAS];
+};
 int main()
 {
     struct Jogador Jogador;
     struct Guarda Guarda;
-
-    srand(time(NULL));
+    struct Chaves Chaves;
+    struct Paredes Paredes;
     int ch;
     int tecla;
+    srand(time(NULL));
     Jogador.chavesColetadas = 0;
     Jogador.vidas = 3;
     Guarda.guarda_x = MAXX - 5;
@@ -202,6 +219,7 @@ int main()
     Jogador.jogador_y = rand() % (MAXY + 2);
     Guarda.guarda_x = rand() % (MAXX - 2);
     Guarda.guarda_y = rand() % (MAXY + 2);
+
 
     puts("Insira o nome do jogador");
     gets(Jogador.nomeJogador);

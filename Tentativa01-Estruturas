@@ -129,23 +129,22 @@ void desenha_guarda(x, y)
     putchxy(x, y, guarda);
 }
 
-void desenha_placar(int nomeJogador, int chavesColetadas, int vidas)
+void desenha_placar(int nomeJogador, int chavesColetadas, int vidas, double tempoJogo)
 {
     textbackground(BLACK);
     textcolor(WHITE);
     gotoxy(3, MAXY+1);
-    printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d", nomeJogador, chavesColetadas, vidas);
+    printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de Jogo: %f", nomeJogador, chavesColetadas, vidas, tempoJogo);
 }
 
-void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, int nomeJogador, int chavesColetadas, int *vidas)
+void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, int nomeJogador, int chavesColetadas, int *vidas, int tempoJogo)
 {
 
-//int distanciaJogadorGuarda = sqrt(((guarda_x - jogador_x) * (guarda_x - jogador_x)) + ((guarda_y - jogador_y) * (guarda_y - jogador_y)));
 
     if(guarda_x == *jogador_x && guarda_y == *jogador_y)
     {
         *vidas -= 1;
-        desenha_placar(nomeJogador, chavesColetadas, *vidas);
+        desenha_placar(nomeJogador, chavesColetadas, *vidas, tempoJogo);
 
         if (*jogador_x <= MAXX - 2)
         {
@@ -178,7 +177,7 @@ struct Jogador
     int vidas;
     int chavesColetadas;
     char nomeJogador[NOME];
-    float tempoDeJogo;
+    double tempoJogo;
 
 };
 
@@ -221,30 +220,36 @@ int main()
     Guarda.guarda_y = rand() % (MAXY + 2);
 
 
-    puts("Insira o nome do jogador");
-    gets(Jogador.nomeJogador);
-    clrscr();
-
-    desenha_cenario(MAXX, MAXY);
-    desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas);
-    desenha_jogador(Jogador.jogador_x, Jogador.jogador_y);
-    desenha_guarda(Guarda.guarda_x, Guarda.guarda_y);
-    movimenta_jogador(&Jogador.jogador_x, &Jogador.jogador_y, ch);
 
     do
     {
-        testa_agentes(Guarda.guarda_x, Guarda.guarda_y, &Jogador.jogador_x, &Jogador.jogador_y, Jogador.nomeJogador, Jogador.chavesColetadas, &Jogador.vidas);
-        if(kbhit())
+
+
+
+        puts("Insira o nome do jogador");
+        gets(Jogador.nomeJogador);
+        clrscr();
+
+        desenha_cenario(MAXX, MAXY);
+        desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo);
+        desenha_jogador(Jogador.jogador_x, Jogador.jogador_y);
+        desenha_guarda(Guarda.guarda_x, Guarda.guarda_y);
+        movimenta_jogador(&Jogador.jogador_x, &Jogador.jogador_y, ch);
+
+        do
         {
-            tecla = getch();
-            movimenta_jogador(&Jogador.jogador_x, &Jogador.jogador_y, tecla);
+            testa_agentes(Guarda.guarda_x, Guarda.guarda_y, &Jogador.jogador_x, &Jogador.jogador_y, Jogador.nomeJogador, Jogador.chavesColetadas, &Jogador.vidas, Jogador.tempoJogo);
+            if(kbhit())
+            {
+                tecla = getch();
+                movimenta_jogador(&Jogador.jogador_x, &Jogador.jogador_y, tecla);
+            }
+
         }
+        while(Jogador.vidas > 0);
 
     }
     while(Jogador.vidas > 0 && ch != 27);
-
-
-
 
 
     return(0);

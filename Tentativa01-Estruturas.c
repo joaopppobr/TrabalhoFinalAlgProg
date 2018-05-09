@@ -12,7 +12,6 @@
 #define VALOR_MAXIMO_RANDX 70
 #define VALOR_MAXIMO_RANDY 15
 #define NUMCHAVES 4
-#define NUM_PAREDES 2
 #define COORDENADAS 2
 void desenha_cenario(limitex, limitey)
 {
@@ -186,27 +185,60 @@ void iniciaJogo(int *jogador_x, int *jogador_y, int *ch)
     movimenta_jogador(*jogador_x, *jogador_y, *ch);
 }
 
-void desenha_paredes(int paredes_x[NUM_PAREDES][COORDENADAS], int paredes_y[NUM_PAREDES][COORDENADAS])
+void gera_paredes(int num_paredes, int num_segmentos)
 {
-    int i, j = 0;
     srand(time(NULL));
+    int i, j;
+    int parede_x = 0;
+    int parede_y = 0;
+    int direcao = 0;
 
-    for (i=0; i<NUM_PAREDES; i++)
+    for(i=0; i<num_paredes; i++)
     {
-        for (j=0; j<COORDENADAS; j++)
+        direcao = 0 + rand() % 4;
+        parede_x = rand() % (MAXX + 1 -  2) + 2;
+        parede_y = rand() % (MAXY + 1 -  2) + 2;
+
+
+        switch(direcao)
         {
-            paredes_x[i][j] = 2 + rand() % (MAXX - 2);
-            putchxy(paredes_x[i][j], i+1, ' ');
-            textbackground(BLUE);
-        }
-        for (j=0; j<COORDENADAS; j++)
-        {
-            paredes_y[i][j] = 2 + rand() % (MAXY - 2);
-            putchxy(i+1,paredes_y[i][j], '   ');
-            textbackground(BLUE);
+        case 0:
+            for(j=0; j<num_segmentos; j++)
+            {
+                  textbackground(BLUE);
+                putchxy(parede_x, parede_y + j, '   ');
+                textbackground(BLUE);
+            }
+            break;
+        case 1:
+            for(j=0; j<num_segmentos; j++)
+            {
+                  textbackground(BLUE);
+                putchxy(parede_x, parede_y - j, '   ');
+                textbackground(BLUE);
+            }
+            break;
+        case 2:
+             for(j=0; j<num_segmentos; j++)
+            {
+                  textbackground(BLUE);
+                putchxy(parede_x + j, parede_y, '   ');
+                textbackground(BLUE);
+            }
+            break;
+        case 3:
+             for(j=0; j<num_segmentos; j++)
+            {
+                  textbackground(BLUE);
+                putchxy(parede_x - j, parede_y, '   ');
+                textbackground(BLUE);
+            }
+            break;
         }
     }
 }
+
+
 
 // A partir daqui só declaro estruturas
 struct Jogador
@@ -234,21 +266,17 @@ struct Chaves
     int chave[NUMCHAVES];
 };
 
-struct Paredes
-{
-    int paredes_x[NUM_PAREDES][COORDENADAS];
-    int paredes_y[NUM_PAREDES][COORDENADAS];
-};
 int main()
 {
 
     struct Jogador Jogador;
     struct Guarda Guarda;
     struct Chaves Chaves;
-    struct Paredes Paredes;
     int ch;
     int tecla;
     int modo_de_jogo;
+    int num_paredes = 5;
+    int num_segmentos = 5;
     srand(time(NULL));
     Jogador.chavesColetadas = 0;
     Jogador.vidas = 3;
@@ -261,7 +289,6 @@ int main()
     Jogador.jogador_y = 2 + rand() % (MAXY - 2);
     Guarda.guarda_x = 2 + rand() % (MAXX - 2);
     Guarda.guarda_y = 2 + rand() % (MAXY - 2);
-
 
 
     do
@@ -280,7 +307,7 @@ int main()
         desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo);
         desenha_jogador(Jogador.jogador_x, Jogador.jogador_y);
         desenha_guarda(Guarda.guarda_x, Guarda.guarda_y);
-        desenha_paredes(Paredes.paredes_x[NUM_PAREDES][COORDENADAS], Paredes.paredes_y[NUM_PAREDES][COORDENADAS]);
+        gera_paredes(num_paredes, num_segmentos);
 
         do
         {

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <conio2.h>
 #include <string.h>
+#include <time.h>
 
 #define LARGURA 60
 #define ALTURA 20
@@ -11,7 +12,7 @@
 #define VALOR_MAXIMO_RANDX 70
 #define VALOR_MAXIMO_RANDY 15
 #define NUMCHAVES 4
-#define NUMPAREDES 2
+#define NUM_PAREDES 2
 #define COORDENADAS 2
 void desenha_cenario(limitex, limitey)
 {
@@ -170,6 +171,44 @@ void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, i
 
 }
 
+void escolherModoJogo(int *modo_de_jogo)
+{
+
+    printf("Escolha o modo de jogo:");
+    scanf("%d", *modo_de_jogo);
+
+
+
+}
+
+void iniciaJogo(int *jogador_x, int *jogador_y, int *ch)
+{
+    movimenta_jogador(*jogador_x, *jogador_y, *ch);
+}
+
+void desenha_paredes(int paredes_x[NUM_PAREDES][COORDENADAS], int paredes_y[NUM_PAREDES][COORDENADAS])
+{
+    int i, j = 0;
+    srand(time(NULL));
+
+    for (i=0; i<NUM_PAREDES; i++)
+    {
+        for (j=0; j<COORDENADAS; j++)
+        {
+            paredes_x[i][j] = 2 + rand() % (MAXX - 2);
+            putchxy(paredes_x[i][j], i+1, ' ');
+            textbackground(BLUE);
+        }
+        for (j=0; j<COORDENADAS; j++)
+        {
+            paredes_y[i][j] = 2 + rand() % (MAXY - 2);
+            putchxy(i+1,paredes_y[i][j], '   ');
+            textbackground(BLUE);
+        }
+    }
+}
+
+// A partir daqui só declaro estruturas
 struct Jogador
 {
     int jogador_x;
@@ -177,7 +216,7 @@ struct Jogador
     int vidas;
     int chavesColetadas;
     char nomeJogador[NOME];
-    double tempoJogo;
+    float tempoJogo;
 
 };
 
@@ -197,16 +236,19 @@ struct Chaves
 
 struct Paredes
 {
-    int coordenada[NUMPAREDES][COORDENADAS];
+    int paredes_x[NUM_PAREDES][COORDENADAS];
+    int paredes_y[NUM_PAREDES][COORDENADAS];
 };
 int main()
 {
+
     struct Jogador Jogador;
     struct Guarda Guarda;
     struct Chaves Chaves;
     struct Paredes Paredes;
     int ch;
     int tecla;
+    int modo_de_jogo;
     srand(time(NULL));
     Jogador.chavesColetadas = 0;
     Jogador.vidas = 3;
@@ -231,11 +273,14 @@ int main()
         gets(Jogador.nomeJogador);
         clrscr();
 
+
+        iniciaJogo(&Jogador.jogador_x, &Jogador.jogador_y, &ch);
+
         desenha_cenario(MAXX, MAXY);
         desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo);
         desenha_jogador(Jogador.jogador_x, Jogador.jogador_y);
         desenha_guarda(Guarda.guarda_x, Guarda.guarda_y);
-        movimenta_jogador(&Jogador.jogador_x, &Jogador.jogador_y, ch);
+        desenha_paredes(Paredes.paredes_x[NUM_PAREDES][COORDENADAS], Paredes.paredes_y[NUM_PAREDES][COORDENADAS]);
 
         do
         {

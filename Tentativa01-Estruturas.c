@@ -214,10 +214,11 @@ int main()
     Guarda.guarda_y = MAXY - 5;
     Jogador.jogador_x = 4;
     Jogador.jogador_y = 4;
-    Jogador.jogador_x = rand() % (MAXX - 2);
-    Jogador.jogador_y = rand() % (MAXY + 2);
-    Guarda.guarda_x = rand() % (MAXX - 2);
-    Guarda.guarda_y = rand() % (MAXY + 2);
+
+    Jogador.jogador_x = 2 + rand() % (MAXX - 2);
+    Jogador.jogador_y = 2 + rand() % (MAXY - 2);
+    Guarda.guarda_x = 2 + rand() % (MAXX - 2);
+    Guarda.guarda_y = 2 + rand() % (MAXY - 2);
 
 
 
@@ -254,3 +255,4 @@ int main()
 
     return(0);
 }
+

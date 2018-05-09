@@ -170,11 +170,23 @@ void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, i
 
 }
 
-void escolherModoJogo(int *modo_de_jogo)
+void escolherModoJogo(int *num_paredes, int *num_segmentos)
 {
+int modo_de_jogo = 0;
 
     printf("Escolha o modo de jogo:");
-    scanf("%d", *modo_de_jogo);
+    scanf("%d", &modo_de_jogo);
+
+    switch(modo_de_jogo){
+case 0:
+    *num_paredes = 5;
+    *num_segmentos = 5;
+    break;
+case 1:
+    *num_paredes = 7;
+    *num_segmentos = 7;
+    break;
+    }
 
 
 
@@ -274,7 +286,6 @@ int main()
     struct Chaves Chaves;
     int ch;
     int tecla;
-    int modo_de_jogo;
     int num_paredes = 5;
     int num_segmentos = 5;
     srand(time(NULL));
@@ -300,6 +311,7 @@ int main()
         gets(Jogador.nomeJogador);
         clrscr();
 
+        escolherModoJogo(&num_paredes, &num_segmentos);
 
         iniciaJogo(&Jogador.jogador_x, &Jogador.jogador_y, &ch);
 

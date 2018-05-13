@@ -13,6 +13,7 @@
 #define VALOR_MAXIMO_RANDY 15
 #define NUMCHAVES 4
 #define COORDENADAS 2
+
 void desenha_cenario(limitex, limitey)
 {
     int i=0;
@@ -129,22 +130,29 @@ void desenha_guarda(x, y)
     putchxy(x, y, guarda);
 }
 
-void desenha_placar(int nomeJogador, int chavesColetadas, int vidas, double tempoJogo)
+void desenha_placar(int nomeJogador, int chavesColetadas, int vidas, float tempoJogo, int modo_de_jogo)
 {
     textbackground(BLACK);
     textcolor(WHITE);
     gotoxy(3, MAXY+1);
-    printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de Jogo: %f", nomeJogador, chavesColetadas, vidas, tempoJogo);
+    if (modo_de_jogo)
+    {
+        printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Dificil", nomeJogador, chavesColetadas, vidas, tempoJogo);
+    }
+    else
+    {
+        printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Facil", nomeJogador, chavesColetadas, vidas, tempoJogo);
+    }
 }
 
-void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, int nomeJogador, int chavesColetadas, int *vidas, int tempoJogo)
+void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, int nomeJogador, int chavesColetadas, int *vidas, int tempoJogo, int modo_de_jogo)
 {
 
 
     if(guarda_x == *jogador_x && guarda_y == *jogador_y)
     {
         *vidas -= 1;
-        desenha_placar(nomeJogador, chavesColetadas, *vidas, tempoJogo);
+        desenha_placar(nomeJogador, chavesColetadas, *vidas, tempoJogo, modo_de_jogo);
 
         if (*jogador_x <= MAXX - 2)
         {
@@ -170,23 +178,19 @@ void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, i
 
 }
 
-void escolherModoJogo(int *num_paredes, int *num_segmentos)
+void escolherModoJogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
 {
-    int modo_de_jogo = 0;
 
     printf("Escolha o modo de jogo:");
-    scanf("%d", &modo_de_jogo);
+    scanf("%d", modo_de_jogo);
 
-    switch(modo_de_jogo)
-    {
-    case 0:
-        *num_paredes = 5;
-        *num_segmentos = 5;
-        break;
-    case 1:
+   if (*modo_de_jogo){
         *num_paredes = 7;
         *num_segmentos = 7;
-        break;
+   }
+   else{
+        *num_paredes = 5;
+        *num_segmentos = 5;
     }
 
 
@@ -219,11 +223,11 @@ void gera_paredes(int num_paredes, int num_segmentos, int parede_x, int parede_y
                 textbackground(BLUE);
                 putchxy(parede_x, parede_y + j, '   ');
                 textbackground(BLUE);
-                  if(parede_x == *jogador_x && parede_y == *jogador_y)
-            {
-                *jogador_x-= 1;
+                if(parede_x == *jogador_x && parede_y == *jogador_y)
+                {
+                    *jogador_x-= 1;
 
-            }
+                }
             }
             break;
         case 1:
@@ -232,11 +236,11 @@ void gera_paredes(int num_paredes, int num_segmentos, int parede_x, int parede_y
                 textbackground(BLUE);
                 putchxy(parede_x, parede_y - j, '   ');
                 textbackground(BLUE);
-                  if(parede_x == *jogador_x && parede_y == *jogador_y)
-            {
-                *jogador_x-= 1;
+                if(parede_x == *jogador_x && parede_y == *jogador_y)
+                {
+                    *jogador_x-= 1;
 
-            }
+                }
             }
             break;
         case 2:
@@ -245,11 +249,11 @@ void gera_paredes(int num_paredes, int num_segmentos, int parede_x, int parede_y
                 textbackground(BLUE);
                 putchxy(parede_x + j, parede_y, '   ');
                 textbackground(BLUE);
-                  if(parede_x == *jogador_x && parede_y == *jogador_y)
-            {
-                *jogador_y-= 1;
+                if(parede_x == *jogador_x && parede_y == *jogador_y)
+                {
+                    *jogador_y-= 1;
 
-            }
+                }
             }
             break;
         case 3:
@@ -258,11 +262,11 @@ void gera_paredes(int num_paredes, int num_segmentos, int parede_x, int parede_y
                 textbackground(BLUE);
                 putchxy(parede_x - j, parede_y, '   ');
                 textbackground(BLUE);
-                 if(parede_x == *jogador_x && parede_y == *jogador_y)
-            {
-                *jogador_y-= 1;
+                if(parede_x == *jogador_x && parede_y == *jogador_y)
+                {
+                    *jogador_y-= 1;
 
-            }
+                }
             }
             break;
         }
@@ -286,6 +290,7 @@ struct Guarda
 {
     int guarda_x;
     int guarda_y;
+
 };
 
 struct Chaves
@@ -308,7 +313,9 @@ int main()
     int num_segmentos = 5;
     int parede_x = 0;
     int parede_y = 0;
+    int modo_de_jogo = 0;
     srand(time(NULL));
+    Jogador.tempoJogo = 0;
     Jogador.chavesColetadas = 0;
     Jogador.vidas = 3;
     Guarda.guarda_x = MAXX - 5;
@@ -331,19 +338,19 @@ int main()
         gets(Jogador.nomeJogador);
         clrscr();
 
-        escolherModoJogo(&num_paredes, &num_segmentos);
+        escolherModoJogo(&num_paredes, &num_segmentos, &modo_de_jogo);
 
         iniciaJogo(&Jogador.jogador_x, &Jogador.jogador_y, &ch);
 
         desenha_cenario(MAXX, MAXY);
-        desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo);
+        desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
         desenha_jogador(Jogador.jogador_x, Jogador.jogador_y);
         desenha_guarda(Guarda.guarda_x, Guarda.guarda_y);
         gera_paredes(num_paredes, num_segmentos, parede_x, parede_y, &Jogador.jogador_x, &Jogador.jogador_y);
 
         do
         {
-            testa_agentes(Guarda.guarda_x, Guarda.guarda_y, &Jogador.jogador_x, &Jogador.jogador_y, Jogador.nomeJogador, Jogador.chavesColetadas, &Jogador.vidas, Jogador.tempoJogo);
+            testa_agentes(Guarda.guarda_x, Guarda.guarda_y, &Jogador.jogador_x, &Jogador.jogador_y, Jogador.nomeJogador, Jogador.chavesColetadas, &Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
             if(kbhit())
             {
                 tecla = getch();

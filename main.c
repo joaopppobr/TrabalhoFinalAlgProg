@@ -184,11 +184,13 @@ void escolherModoJogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
     printf("Escolha o modo de jogo:");
     scanf("%d", modo_de_jogo);
 
-   if (*modo_de_jogo){
+    if (*modo_de_jogo)
+    {
         *num_paredes = 7;
         *num_segmentos = 7;
-   }
-   else{
+    }
+    else
+    {
         *num_paredes = 5;
         *num_segmentos = 5;
     }
@@ -329,6 +331,13 @@ int main()
     Guarda.guarda_y = 2 + rand() % (MAXY - 2);
 
 
+
+    time_t start, stop;
+    clock_t ticks;
+    long count;
+
+
+
     do
     {
 
@@ -342,8 +351,11 @@ int main()
 
         iniciaJogo(&Jogador.jogador_x, &Jogador.jogador_y, &ch);
 
-        desenha_cenario(MAXX, MAXY);
+        time(&start);
+
+
         desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
+        desenha_cenario(MAXX, MAXY);
         desenha_jogador(Jogador.jogador_x, Jogador.jogador_y);
         desenha_guarda(Guarda.guarda_x, Guarda.guarda_y);
         gera_paredes(num_paredes, num_segmentos, parede_x, parede_y, &Jogador.jogador_x, &Jogador.jogador_y);
@@ -362,6 +374,12 @@ int main()
 
     }
     while(Jogador.vidas > 0 && ch != 27);
+
+    time(&stop);
+
+    clrscr();
+    printf("\n\t\t\tVoce perdeu!\n\n");
+    printf("\nTempo de jogo: %.2f segundos",  difftime(stop, start));
 
 
     return(0);

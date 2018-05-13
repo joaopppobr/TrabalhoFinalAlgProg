@@ -172,20 +172,21 @@ void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, i
 
 void escolherModoJogo(int *num_paredes, int *num_segmentos)
 {
-int modo_de_jogo = 0;
+    int modo_de_jogo = 0;
 
     printf("Escolha o modo de jogo:");
     scanf("%d", &modo_de_jogo);
 
-    switch(modo_de_jogo){
-case 0:
-    *num_paredes = 5;
-    *num_segmentos = 5;
-    break;
-case 1:
-    *num_paredes = 7;
-    *num_segmentos = 7;
-    break;
+    switch(modo_de_jogo)
+    {
+    case 0:
+        *num_paredes = 5;
+        *num_segmentos = 5;
+        break;
+    case 1:
+        *num_paredes = 7;
+        *num_segmentos = 7;
+        break;
     }
 
 
@@ -197,12 +198,10 @@ void iniciaJogo(int *jogador_x, int *jogador_y, int *ch)
     movimenta_jogador(*jogador_x, *jogador_y, *ch);
 }
 
-void gera_paredes(int num_paredes, int num_segmentos)
+void gera_paredes(int num_paredes, int num_segmentos, int parede_x, int parede_y, int *jogador_x, int *jogador_y)
 {
     srand(time(NULL));
     int i, j;
-    int parede_x = 0;
-    int parede_y = 0;
     int direcao = 0;
 
     for(i=0; i<num_paredes; i++)
@@ -217,33 +216,53 @@ void gera_paredes(int num_paredes, int num_segmentos)
         case 0:
             for(j=0; j<num_segmentos; j++)
             {
-                  textbackground(BLUE);
+                textbackground(BLUE);
                 putchxy(parede_x, parede_y + j, '   ');
                 textbackground(BLUE);
+                  if(parede_x == *jogador_x && parede_y == *jogador_y)
+            {
+                *jogador_x-= 1;
+
+            }
             }
             break;
         case 1:
             for(j=0; j<num_segmentos; j++)
             {
-                  textbackground(BLUE);
+                textbackground(BLUE);
                 putchxy(parede_x, parede_y - j, '   ');
                 textbackground(BLUE);
+                  if(parede_x == *jogador_x && parede_y == *jogador_y)
+            {
+                *jogador_x-= 1;
+
+            }
             }
             break;
         case 2:
-             for(j=0; j<num_segmentos; j++)
+            for(j=0; j<num_segmentos; j++)
             {
-                  textbackground(BLUE);
+                textbackground(BLUE);
                 putchxy(parede_x + j, parede_y, '   ');
                 textbackground(BLUE);
+                  if(parede_x == *jogador_x && parede_y == *jogador_y)
+            {
+                *jogador_y-= 1;
+
+            }
             }
             break;
         case 3:
-             for(j=0; j<num_segmentos; j++)
+            for(j=0; j<num_segmentos; j++)
             {
-                  textbackground(BLUE);
+                textbackground(BLUE);
                 putchxy(parede_x - j, parede_y, '   ');
                 textbackground(BLUE);
+                 if(parede_x == *jogador_x && parede_y == *jogador_y)
+            {
+                *jogador_y-= 1;
+
+            }
             }
             break;
         }
@@ -251,8 +270,7 @@ void gera_paredes(int num_paredes, int num_segmentos)
 }
 
 
-
-// A partir daqui só declaro estruturas
+// A partir daqui so declaro estruturas
 struct Jogador
 {
     int jogador_x;
@@ -288,6 +306,8 @@ int main()
     int tecla;
     int num_paredes = 5;
     int num_segmentos = 5;
+    int parede_x = 0;
+    int parede_y = 0;
     srand(time(NULL));
     Jogador.chavesColetadas = 0;
     Jogador.vidas = 3;
@@ -319,7 +339,7 @@ int main()
         desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo);
         desenha_jogador(Jogador.jogador_x, Jogador.jogador_y);
         desenha_guarda(Guarda.guarda_x, Guarda.guarda_y);
-        gera_paredes(num_paredes, num_segmentos);
+        gera_paredes(num_paredes, num_segmentos, parede_x, parede_y, &Jogador.jogador_x, &Jogador.jogador_y);
 
         do
         {

@@ -285,6 +285,7 @@ struct Jogador
     int chavesColetadas;
     char nomeJogador[NOME];
     float tempoJogo;
+    float score;
 
 };
 
@@ -378,8 +379,21 @@ int main()
     time(&stop);
 
     clrscr();
-    printf("\n\t\t\tVoce perdeu!\n\n");
-    printf("\nTempo de jogo: %.2f segundos",  difftime(stop, start));
+
+    if(modo_de_jogo)
+    {
+        Jogador.score = (30000 * 2) / difftime(stop, start);
+        printf("\n\t\t\tVoce perdeu!\n\n");
+        printf("\nTempo de jogo: %.2f segundos",  difftime(stop, start));
+        printf("\nPontuacao: %.0f\n", Jogador.score);
+    }
+    else
+    {
+        Jogador.score = 30000 / difftime(stop, start);
+        printf("\n\t\t\tVoce perdeu!\n\n");
+        printf("\n\t\tTempo de jogo: %.2f segundos\n",  difftime(stop, start));
+        printf("\n\t\tPontuacao: %.0f\n", Jogador.score);
+    }
 
 
     return(0);

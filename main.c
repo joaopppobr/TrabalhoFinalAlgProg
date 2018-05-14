@@ -3,6 +3,7 @@
 #include <conio2.h>
 #include <string.h>
 #include <time.h>
+#include <windows.h>
 
 #define LARGURA 60
 #define ALTURA 20
@@ -13,6 +14,7 @@
 #define VALOR_MAXIMO_RANDY 15
 #define NUMCHAVES 4
 #define COORDENADAS 2
+#define NUM_RANK 10
 
 void desenha_cenario(limitex, limitey)
 {
@@ -152,7 +154,8 @@ void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, i
     if(guarda_x == *jogador_x && guarda_y == *jogador_y)
     {
         *vidas -= 1;
-        desenha_placar(nomeJogador, chavesColetadas, *vidas, tempoJogo, modo_de_jogo);
+        textbackground(WHITE);
+        putchxy(*jogador_x, *jogador_y, 'G');
 
         if (*jogador_x <= MAXX - 2)
         {
@@ -172,10 +175,14 @@ void testa_agentes(int guarda_x, int guarda_y, int *jogador_x, int *jogador_y, i
             *jogador_y-= 2;
         }
 
+        textbackground(WHITE);
+        putchxy(*jogador_x, *jogador_y, 'P');
+        desenha_placar(nomeJogador, chavesColetadas, *vidas, tempoJogo, modo_de_jogo);
+
+
+
+
     }
-
-
-
 }
 
 void escolherModoJogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
@@ -199,10 +206,6 @@ void escolherModoJogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
 
 }
 
-void iniciaJogo(int *jogador_x, int *jogador_y, int *ch)
-{
-    movimenta_jogador(*jogador_x, *jogador_y, *ch);
-}
 
 void gera_paredes(int num_paredes, int num_segmentos, int parede_x, int parede_y, int *jogador_x, int *jogador_y)
 {
@@ -274,7 +277,23 @@ void gera_paredes(int num_paredes, int num_segmentos, int parede_x, int parede_y
         }
     }
 }
+int gera_score(clock_t tempo_ini, clock_t tempo_fim)
+{
+    return (int) ((tempo_fim - tempo_ini) / CLOCKS_PER_SEC);
+}
 
+int adiciona_ranking(int score,int modo_de_jogo)
+{
+
+    if (modo_de_jogo)
+    {
+        return(int) ((30000 * 2)/ score);
+    }
+    else
+    {
+        return(int) ((30000)/ score);
+    }
+}
 
 // A partir daqui so declaro estruturas
 struct Jogador
@@ -303,6 +322,8 @@ struct Chaves
     int chave[NUMCHAVES];
 };
 
+
+
 int main()
 {
 
@@ -316,6 +337,11 @@ int main()
     int parede_x = 0;
     int parede_y = 0;
     int modo_de_jogo = 0;
+
+    int score, num_partidas = 0;
+    int ranking[NUM_RANK] = {-1};
+
+
     srand(time(NULL));
     Jogador.tempoJogo = 0;
     Jogador.chavesColetadas = 0;
@@ -330,17 +356,12 @@ int main()
     Guarda.guarda_x = 2 + rand() % (MAXX - 2);
     Guarda.guarda_y = 2 + rand() % (MAXY - 2);
 
-
-
-    time_t start, stop;
-    clock_t ticks;
-    long count;
-
+    clock_t tempo_ini, tempo_fim;
 
 
     do
     {
-
+         int nrank=0;
 
 
         puts("Insira o nome do jogador");
@@ -348,10 +369,8 @@ int main()
         clrscr();
 
         escolherModoJogo(&num_paredes, &num_segmentos, &modo_de_jogo);
+        tempo_ini = clock();
 
-        iniciaJogo(&Jogador.jogador_x, &Jogador.jogador_y, &ch);
-
-        time(&start);
 
 
         desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
@@ -371,15 +390,23 @@ int main()
 
         }
         while(Jogador.vidas > 0);
+        tempo_fim = clock();
+        num_partidas++;
+
+        score = gera_score(tempo_ini, tempo_fim);
+        ranking[nrank] = adiciona_ranking(score, modo_de_jogo);
+        nrank++;
 
     }
-    while(Jogador.vidas > 0 && ch != 27);
+    while(num_partidas < 1);
 
-    time(&stop);
+   // ranking = ordena_ranking(ranking);
+//exibe_ranking(ranking);
 
     clrscr();
     printf("\n\t\t\tVoce perdeu!\n\n");
-    printf("\nTempo de jogo: %.2f segundos",  difftime(stop, start));
+    printf("\n\t\tTempo de jogo: %d segundos\n",  score);
+    printf("\n \t\tranking: %d\n\n", ranking[0]);
 
 
     return(0);

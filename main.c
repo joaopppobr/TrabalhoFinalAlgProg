@@ -295,6 +295,25 @@ int adiciona_ranking(int score,int modo_de_jogo)
     }
 }
 
+int comp (const void * elem1, const void * elem2)
+{
+    int f = *((int*)elem1);
+    int s = *((int*)elem2);
+    if (f > s)
+        return  1;
+    if (f < s)
+        return -1;
+    return 0;
+}
+
+void exibe_ranking(int ranking[NUM_RANK])
+{
+    for (int i = 0 ; i < 10 ; i++)
+        printf ("\n\t\t%d \n", ranking[i]);
+}
+
+
+
 // A partir daqui so declaro estruturas
 struct Jogador
 {
@@ -342,26 +361,26 @@ int main()
     int ranking[NUM_RANK] = {-1};
 
 
-    srand(time(NULL));
-    Jogador.tempoJogo = 0;
-    Jogador.chavesColetadas = 0;
-    Jogador.vidas = 3;
-    Guarda.guarda_x = MAXX - 5;
-    Guarda.guarda_y = MAXY - 5;
-    Jogador.jogador_x = 4;
-    Jogador.jogador_y = 4;
-
-    Jogador.jogador_x = 2 + rand() % (MAXX - 2);
-    Jogador.jogador_y = 2 + rand() % (MAXY - 2);
-    Guarda.guarda_x = 2 + rand() % (MAXX - 2);
-    Guarda.guarda_y = 2 + rand() % (MAXY - 2);
 
     clock_t tempo_ini, tempo_fim;
 
 
     do
     {
-         int nrank=0;
+        srand(time(NULL));
+        int nrank=0;
+        Jogador.tempoJogo = 0;
+        Jogador.chavesColetadas = 0;
+        Jogador.vidas = 3;
+        Guarda.guarda_x = MAXX - 5;
+        Guarda.guarda_y = MAXY - 5;
+        Jogador.jogador_x = 4;
+        Jogador.jogador_y = 4;
+
+        Jogador.jogador_x = 2 + rand() % (MAXX - 2);
+        Jogador.jogador_y = 2 + rand() % (MAXY - 2);
+        Guarda.guarda_x = 2 + rand() % (MAXX - 2);
+        Guarda.guarda_y = 2 + rand() % (MAXY - 2);
 
 
         puts("Insira o nome do jogador");
@@ -396,17 +415,17 @@ int main()
         score = gera_score(tempo_ini, tempo_fim);
         ranking[nrank] = adiciona_ranking(score, modo_de_jogo);
         nrank++;
+        qsort (ranking, sizeof(ranking)/sizeof(*ranking), sizeof(*ranking), comp);
 
     }
-    while(num_partidas < 1);
+    while(num_partidas < NUM_RANK);
 
-   // ranking = ordena_ranking(ranking);
-//exibe_ranking(ranking);
 
     clrscr();
     printf("\n\t\t\tVoce perdeu!\n\n");
     printf("\n\t\tTempo de jogo: %d segundos\n",  score);
-    printf("\n \t\tranking: %d\n\n", ranking[0]);
+    exibe_ranking(ranking);
+
 
 
     return(0);

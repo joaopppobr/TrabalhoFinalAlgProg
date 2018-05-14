@@ -382,7 +382,8 @@ int main()
         Guarda.guarda_x = 2 + rand() % (MAXX - 2);
         Guarda.guarda_y = 2 + rand() % (MAXY - 2);
 
-
+        clrscr();
+        fflush(stdin);
         puts("Insira o nome do jogador");
         gets(Jogador.nomeJogador);
         clrscr();

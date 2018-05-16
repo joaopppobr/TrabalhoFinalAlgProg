@@ -5,13 +5,9 @@
 #include <time.h>
 #include <windows.h>
 
-#define LARGURA 60
-#define ALTURA 20
 #define MAXX 80
 #define MAXY 24
 #define NOME 20
-#define VALOR_MAXIMO_RANDX 70
-#define VALOR_MAXIMO_RANDY 15
 #define NUM_CHAVES 4
 #define NUM_RANK 2
 #define COORDENADAS 2

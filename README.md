@@ -1,5 +1,6 @@
 # TrabalhoFinalAlgProg
 Trabalho Final da Disciplina de Algoritmos e Programação. INF01202 2018-1
+
 João Pedro Porto Pires de Oliveira e Théo Santiago Muller.
 
 ## Bibliotecas:

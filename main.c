@@ -304,15 +304,6 @@ int adiciona_ranking(int score,int modo_de_jogo)
 }
 int comp (const void * elem1, const void * elem2)
 {
-<<<<<<< HEAD
-    int jogador_x;
-    int jogador_y;
-    int vidas;
-    int chavesColetadas;
-    char nomeJogador[NOME];
-    float tempoJogo;
-    float score;
-=======
     int f = *((int*)elem1);
     int s = *((int*)elem2);
     if (f > s)
@@ -329,7 +320,6 @@ void exibe_ranking(int ranking[NUM_RANK])
 int testa_paredes (Coordenada listaparedes[], int *jogador_x, int *jogador_y, int num_paredes)
 {
 int i=0;
->>>>>>> ca5d2c46e3b8a0473b9595d0b6be4905aef52b54
 
 for(i=0; i < num_paredes; i++){
     if(listaparedes[i].x == *jogador_x && listaparedes[i].y == *jogador_y)
@@ -421,30 +411,11 @@ int main()
 
 
     clrscr();
-<<<<<<< HEAD
-
-    if(modo_de_jogo)
-    {
-        Jogador.score = (30000 * 2) / difftime(stop, start);
-        printf("\n\t\t\tVoce perdeu!\n\n");
-        printf("\nTempo de jogo: %.2f segundos",  difftime(stop, start));
-        printf("\nPontuacao: %.0f\n", Jogador.score);
-    }
-    else
-    {
-        Jogador.score = 30000 / difftime(stop, start);
-        printf("\n\t\t\tVoce perdeu!\n\n");
-        printf("\n\t\tTempo de jogo: %.2f segundos\n",  difftime(stop, start));
-        printf("\n\t\tPontuacao: %.0f\n", Jogador.score);
-    }
-=======
     printf("\n\t\t\tVoce perdeu!\n\n");
     printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.score);
     exibe_ranking(ranking);
 
->>>>>>> ca5d2c46e3b8a0473b9595d0b6be4905aef52b54
 
 
     return(0);
 }
-

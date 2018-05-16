@@ -12,9 +12,49 @@
 #define NOME 20
 #define VALOR_MAXIMO_RANDX 70
 #define VALOR_MAXIMO_RANDY 15
-#define NUMCHAVES 4
-#define COORDENADAS 2
+#define NUM_CHAVES 4
 #define NUM_RANK 10
+#define COORDENADAS 2
+#define NUM_GUARDAS 3
+
+// A partir daqui so declaro estruturas
+typedef struct
+{
+    int x;
+    int y;
+} Coordenada;
+
+typedef struct Jogador
+{
+    int vidas;
+    int chavesColetadas;
+    char nomeJogador[NOME];
+    float tempoJogo;
+    Coordenada posicao;
+
+};
+
+typedef struct Guarda
+{
+    Coordenada posicao;
+};
+
+typedef struct
+{
+    int status ;
+    int ch;
+    Coordenada posicao;
+} Chave;
+
+typedef struct
+{
+    Coordenada posicao;
+} Parede;
+
+
+
+
+
 
 void desenha_cenario(limitex, limitey)
 {
@@ -312,43 +352,15 @@ void exibe_ranking(int ranking[NUM_RANK])
         printf ("\n\t\t%d \n", ranking[i]);
 }
 
-
-
-// A partir daqui so declaro estruturas
-struct Jogador
-{
-    int jogador_x;
-    int jogador_y;
-    int vidas;
-    int chavesColetadas;
-    char nomeJogador[NOME];
-    float tempoJogo;
-
-};
-
-struct Guarda
-{
-    int guarda_x;
-    int guarda_y;
-
-};
-
-struct Chaves
-{
-    char simboloChave;
-    int chave_x, chave_y;
-    char status;
-    int chave[NUMCHAVES];
-};
-
-
-
 int main()
 {
 
     struct Jogador Jogador;
     struct Guarda Guarda;
-    struct Chaves Chaves;
+    struct Chave;
+    struct Coordenada;
+    struct Parede;
+
     int ch;
     int tecla;
     int num_paredes = 5;
@@ -360,6 +372,8 @@ int main()
     int score, num_partidas = 0;
     int ranking[NUM_RANK] = {-1};
 
+   // Coordenada listaparede[num_paredes];
+    Chave listachave[NUM_CHAVES];
 
 
     clock_t tempo_ini, tempo_fim;
@@ -372,15 +386,15 @@ int main()
         Jogador.tempoJogo = 0;
         Jogador.chavesColetadas = 0;
         Jogador.vidas = 3;
-        Guarda.guarda_x = MAXX - 5;
-        Guarda.guarda_y = MAXY - 5;
-        Jogador.jogador_x = 4;
-        Jogador.jogador_y = 4;
+        Guarda.posicao.x = MAXX - 5;
+        Guarda.posicao.y = MAXY - 5;
+        Jogador.posicao.x = 4;
+        Jogador.posicao.y = 4;
 
-        Jogador.jogador_x = 2 + rand() % (MAXX - 2);
-        Jogador.jogador_y = 2 + rand() % (MAXY - 2);
-        Guarda.guarda_x = 2 + rand() % (MAXX - 2);
-        Guarda.guarda_y = 2 + rand() % (MAXY - 2);
+        Jogador.posicao.x = 2 + rand() % (MAXX - 2);
+        Jogador.posicao.y = 2 + rand() % (MAXY - 2);
+        Guarda.posicao.x = 2 + rand() % (MAXX - 2);
+        Guarda.posicao.y = 2 + rand() % (MAXY - 2);
 
         clrscr();
         fflush(stdin);
@@ -395,17 +409,17 @@ int main()
 
         desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
         desenha_cenario(MAXX, MAXY);
-        desenha_jogador(Jogador.jogador_x, Jogador.jogador_y);
-        desenha_guarda(Guarda.guarda_x, Guarda.guarda_y);
-        gera_paredes(num_paredes, num_segmentos, parede_x, parede_y, &Jogador.jogador_x, &Jogador.jogador_y);
+        desenha_jogador(Jogador.posicao.x, Jogador.posicao.y);
+        desenha_guarda(Guarda.posicao.x, Guarda.posicao.y);
+        gera_paredes(num_paredes, num_segmentos, parede_x, parede_y, &Jogador.posicao.x, &Jogador.posicao.y);
 
         do
         {
-            testa_agentes(Guarda.guarda_x, Guarda.guarda_y, &Jogador.jogador_x, &Jogador.jogador_y, Jogador.nomeJogador, Jogador.chavesColetadas, &Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
+            testa_agentes(Guarda.posicao.x, Guarda.posicao.y, &Jogador.posicao.x, &Jogador.posicao.y, Jogador.nomeJogador, Jogador.chavesColetadas, &Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
             if(kbhit())
             {
                 tecla = getch();
-                movimenta_jogador(&Jogador.jogador_x, &Jogador.jogador_y, tecla);
+                movimenta_jogador(&Jogador.posicao.x, &Jogador.posicao.y, tecla);
             }
 
         }

@@ -15,9 +15,8 @@
 #define NUM_CHAVES 4
 #define NUM_RANK 2
 #define COORDENADAS 2
-#define NUM_agentes 3
+#define NUM_AGENTES 3
 
-// A partir daqui so declaro estruturas
 typedef struct
 {
     int x;
@@ -83,7 +82,6 @@ void desenha_cenario(limitex, limitey)
         }
     }
 }
-
 void desenha_jogador(x, y)
 {
     char jogador = 'P';
@@ -92,8 +90,7 @@ void desenha_jogador(x, y)
     textcolor(GREEN);
     putchxy(x, y, jogador);
 }
-
-void movimenta_jogador(int *x,int *y, int ch)
+void movimenta_jogador(int *x,int *y, int ch, Coordenada listaparedes[], int num_paredes)
 {
 
     char jogador = 'P';
@@ -102,7 +99,7 @@ void movimenta_jogador(int *x,int *y, int ch)
     switch(ch)
     {
     case 75:
-        if(*x > 2)
+        if(*x > 2 && testa_paredes(listaparedes, x, y, num_paredes))
         {
             textbackground(BLACK);
             putchxy(*x, *y, ' ');
@@ -113,7 +110,7 @@ void movimenta_jogador(int *x,int *y, int ch)
         break;
 
     case 77:
-        if(*x <= MAXX-2)
+        if(*x <= MAXX-2 && testa_paredes(listaparedes, x, y, num_paredes))
         {
             textbackground(BLACK);
             putchxy(*x, *y, ' ');
@@ -124,7 +121,7 @@ void movimenta_jogador(int *x,int *y, int ch)
         break;
 
     case 72:
-        if(*y > 2)
+        if(*y > 2 && testa_paredes(listaparedes, x, y, num_paredes))
         {
             textbackground(BLACK);
             putchxy(*x, *y, ' ');
@@ -135,7 +132,7 @@ void movimenta_jogador(int *x,int *y, int ch)
         break;
 
     case 80:
-        if(*y <= MAXY-2)
+        if(*y <= MAXY-2 && testa_paredes(listaparedes, x, y, num_paredes))
         {
             textbackground(BLACK);
             putchxy(*x, *y, ' ');
@@ -149,19 +146,18 @@ void movimenta_jogador(int *x,int *y, int ch)
 
 
 }
-
 void desenha_agente(Coordenada listaagentes[])
 {
     srand(time(NULL));
     int i, j;
     char agente = 'G';
 
-     for(j=0; j<NUM_agentes; j++)
+     for(j=0; j<NUM_AGENTES; j++)
     {
     listaagentes[j].x = rand() % (MAXX + 1 -  2) + 2;
         listaagentes[j].y = rand() % (MAXY + 1 -  2) + 2;
 
-     for(i=0; i<NUM_agentes; i++)
+     for(i=0; i<NUM_AGENTES; i++)
     {
     textbackground(WHITE);
     textcolor(RED);
@@ -170,7 +166,6 @@ void desenha_agente(Coordenada listaagentes[])
 
 }
 }
-
 void desenha_placar(int nomeJogador, int chavesColetadas, int vidas, float tempoJogo, int modo_de_jogo)
 {
     textbackground(BLACK);
@@ -185,17 +180,16 @@ void desenha_placar(int nomeJogador, int chavesColetadas, int vidas, float tempo
         printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Facil", nomeJogador, chavesColetadas, vidas, tempoJogo);
     }
 }
-
 void testa_agentes(Coordenada listaagentes[], int *jogador_x, int *jogador_y, int nomeJogador, int chavesColetadas, int *vidas, int tempoJogo, int modo_de_jogo)
 {
 int i=0;
 
-for(i=0; i<NUM_agentes; i++){
+for(i=0; i<NUM_AGENTES; i++){
     if(listaagentes[i].x == *jogador_x && listaagentes[i].y == *jogador_y)
     {
         *vidas -= 1;
         textbackground(WHITE);
-        putchxy(*jogador_x, *jogador_y, 'G');
+        putchxy(*jogador_x, *jogador_y, ' ');
 
         if (*jogador_x <= MAXX - 2)
         {
@@ -225,7 +219,6 @@ for(i=0; i<NUM_agentes; i++){
     }
 }
 }
-
 void escolherModoJogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
 {
 
@@ -246,8 +239,7 @@ void escolherModoJogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
 
 
 }
-
-void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparede[], int *jogador_x, int *jogador_y)
+void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[], int *jogador_x, int *jogador_y)
 {
     srand(time(NULL));
     int i, j;
@@ -256,8 +248,8 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparede[], 
     for(i=0; i<num_paredes; i++)
     {
         direcao = 0 + rand() % 4;
-        listaparede[i].x = rand() % (MAXX + 1 -  2) + 2;
-        listaparede[i].y = rand() % (MAXY + 1 -  2) + 2;
+        listaparedes[i].x = rand() % (MAXX + 1 -  2) + 2;
+        listaparedes[i].y = rand() % (MAXY + 1 -  2) + 2;
 
 
         switch(direcao)
@@ -266,7 +258,7 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparede[], 
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparede[i].x, listaparede[i].y + j, '   ');
+                putchxy(listaparedes[i].x, listaparedes[i].y + j, '   ');
                 textbackground(BLUE);
             }
             break;
@@ -274,7 +266,7 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparede[], 
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparede[i].x, listaparede[i].y - j, '   ');
+                putchxy(listaparedes[i].x, listaparedes[i].y - j, '   ');
                 textbackground(BLUE);
 
             }
@@ -283,7 +275,7 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparede[], 
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparede[i].x + j, listaparede[i].y, '   ');
+                putchxy(listaparedes[i].x + j, listaparedes[i].y, '   ');
                 textbackground(BLUE);
             }
             break;
@@ -291,7 +283,7 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparede[], 
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparede[i].x - j, listaparede[i].y, '   ');
+                putchxy(listaparedes[i].x - j, listaparedes[i].y, '   ');
                 textbackground(BLUE);
             }
             break;
@@ -302,7 +294,6 @@ int gera_score(clock_t tempo_ini, clock_t tempo_fim)
 {
     return (int) ((tempo_fim - tempo_ini) / CLOCKS_PER_SEC);
 }
-
 int adiciona_ranking(int score,int modo_de_jogo)
 {
 
@@ -315,7 +306,6 @@ int adiciona_ranking(int score,int modo_de_jogo)
         return(int) ((30000)/ score);
     }
 }
-
 int comp (const void * elem1, const void * elem2)
 {
     int f = *((int*)elem1);
@@ -326,11 +316,27 @@ int comp (const void * elem1, const void * elem2)
         return -1;
     return 0;
 }
-
 void exibe_ranking(int ranking[NUM_RANK])
 {
     for (int i = 0 ; i < NUM_RANK ; i++)
         printf ("\n\t\t%d \n", ranking[i]);
+}
+int testa_paredes (Coordenada listaparedes[], int *jogador_x, int *jogador_y, int num_paredes)
+{
+int i=0;
+
+for(i=0; i < num_paredes; i++){
+    if(listaparedes[i].x == *jogador_x && listaparedes[i].y == *jogador_y)
+    {
+       return(int)(0);
+    }
+
+    else{
+        return (int) (1);
+    }
+
+}
+
 }
 
 int main()
@@ -343,16 +349,16 @@ int main()
 
     int ch;
     int tecla;
-    int num_paredes = 5;
+    int num_paredes = 0;
     int num_segmentos = 5;
     int modo_de_jogo = 0;
 
     int num_partidas = 0;
     int ranking[NUM_RANK] = {-1};
 
-    Coordenada listaparede[num_paredes];
+    Coordenada listaparedes[num_paredes];
     Chave listachave[NUM_CHAVES];
-    Coordenada listaagentes[NUM_agentes];
+    Coordenada listaagentes[NUM_AGENTES];
 
 
     clock_t tempo_ini, tempo_fim;
@@ -365,9 +371,6 @@ int main()
         Jogador.tempoJogo = 0;
         Jogador.chavesColetadas = 0;
         Jogador.vidas = 3;
-        Jogador.posicao.x = 4;
-        Jogador.posicao.y = 4;
-
         Jogador.posicao.x = 2 + rand() % (MAXX - 2);
         Jogador.posicao.y = 2 + rand() % (MAXY - 2);
 
@@ -386,7 +389,7 @@ int main()
         desenha_cenario(MAXX, MAXY);
         desenha_jogador(Jogador.posicao.x, Jogador.posicao.y);
         desenha_agente(listaagentes);
-        gera_paredes(num_paredes, num_segmentos, listaparede, &Jogador.posicao.x, &Jogador.posicao.y);
+        gera_paredes(num_paredes, num_segmentos, listaparedes, &Jogador.posicao.x, &Jogador.posicao.y);
 
         do
         {
@@ -394,7 +397,7 @@ int main()
             if(kbhit())
             {
                 tecla = getch();
-                movimenta_jogador(&Jogador.posicao.x, &Jogador.posicao.y, tecla);
+                movimenta_jogador(&Jogador.posicao.x, &Jogador.posicao.y, tecla, listaparedes, num_paredes);
             }
 
         }

@@ -11,7 +11,7 @@
 #define NUM_CHAVES 4
 #define NUM_RANK 2
 #define COORDENADAS 2
-#define NUM_AGENTES 3
+#define NUM_AGENTES 4
 
 typedef struct
 {
@@ -148,9 +148,8 @@ void desenha_agente(Coordenada listaagentes[])
 
      for(j=0; j<NUM_AGENTES; j++)
     {
-    listaagentes[j].x = rand() % (MAXX + 1 -  2) + 2;
-        listaagentes[j].y = rand() % (MAXY + 1 -  2) + 2;
-
+    listaagentes[j].x = rand() % (MAXX - 2) + 2;
+    listaagentes[j].y = rand() % (MAXY - 2) + 2;
      for(i=0; i<NUM_AGENTES; i++)
     {
     textbackground(RED);
@@ -167,8 +166,8 @@ void desenha_chaves(Coordenada listachaves[])
 
      for(j=0; j<NUM_CHAVES; j++)
     {
-    listachaves[j].x = rand() % (MAXX + 1 ) + 2;
-        listachaves[j].y = rand() % (MAXY + 1) - 2;
+    listachaves[j].x = rand() % (MAXX - 3) + 1;
+        listachaves[j].y = rand() % (MAXY - 4) + 2;
 
      for(i=0; i<NUM_CHAVES; i++)
     {
@@ -280,8 +279,8 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[],
     for(i=0; i<num_paredes; i++)
     {
         direcao = 0 + rand() % 4;
-        listaparedes[i].x = rand() % (MAXX + 1 - 2) + 2;
-        listaparedes[i].y = rand() % (MAXY + 1 - 2) + 2;
+        listaparedes[i].x = rand() % (MAXX - num_segmentos) - 1;
+        listaparedes[i].y = rand() % (MAXY - num_segmentos) - 1;
 
 
         switch(direcao)
@@ -290,17 +289,16 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[],
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparedes[i].x, listaparedes[i].y + j, '   ');
+                putchxy(listaparedes[i].x, listaparedes[i].y - j, '   ');
                 textbackground(BLUE);
             }
             break;
-        case 1:
+            case 1:
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparedes[i].x, listaparedes[i].y - j, '   ');
+                putchxy(listaparedes[i].x, listaparedes[i].y + j, '   ');
                 textbackground(BLUE);
-
             }
             break;
         case 2:

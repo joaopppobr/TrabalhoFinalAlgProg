@@ -30,6 +30,12 @@ typedef struct Jogador
 
 };
 
+typedef struct
+{
+    int status;
+    Coordenada posicao;
+} Chave;
+
 void desenha_cenario(limitex, limitey)
 {
     int i=0;
@@ -274,8 +280,8 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[],
     for(i=0; i<num_paredes; i++)
     {
         direcao = 0 + rand() % 4;
-        listaparedes[i].x = rand() % (MAXX + 1 -  2) + 2;
-        listaparedes[i].y = rand() % (MAXY + 1 -  2) + 2;
+        listaparedes[i].x = rand() % (MAXX + 1 - 2) + 2;
+        listaparedes[i].y = rand() % (MAXY + 1 - 2) + 2;
 
 
         switch(direcao)
@@ -383,7 +389,7 @@ int main()
     int ranking[NUM_RANK] = {-1};
 
     Coordenada listaparedes[num_paredes];
-    Coordenada listachaves[NUM_CHAVES];
+    Chave listachaves[NUM_CHAVES];
     Coordenada listaagentes[NUM_AGENTES];
 
 

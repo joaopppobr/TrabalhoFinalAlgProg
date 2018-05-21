@@ -36,20 +36,20 @@ typedef struct
     Coordenada posicao;
 } Chave;
 
-void desenha_cenario(limitex, limitey)
+void desenha_cenario(limite_x, limite_y)
 {
     int i=0;
 
-    for (i=0; i<limitex; i++)
+    for (i=0; i<limite_x; i++)
     {
-        if(limitex == MAXX)
+        if(limite_x == MAXX)
         {
             putchxy(i+1, 1, ' ');
             textbackground(BLUE);
             putchxy(i+1, MAXY, ' ');
             textbackground(BLUE);
         }
-        if(limitex == MAXY)
+        if(limite_x == MAXY)
         {
             putchxy(1, i+1, '   ');
             textbackground(BLUE);
@@ -58,16 +58,16 @@ void desenha_cenario(limitex, limitey)
         }
     }
 
-    for (i=0; i<limitey; i++)
+    for (i=0; i<limite_y; i++)
     {
-        if(limitey == MAXX)
+        if(limite_y == MAXX)
         {
             putchxy(i+1, 1, ' ');
             textbackground(BLUE);
             putchxy(i+1, MAXY, ' ');
             textbackground(BLUE);
         }
-        if(limitey == MAXY)
+        if(limite_y == MAXY)
         {
             putchxy(1, i+1, '   ');
             textbackground(BLUE);

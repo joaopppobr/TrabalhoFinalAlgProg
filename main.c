@@ -22,9 +22,9 @@ typedef struct
 typedef struct Jogador
 {
     int vidas;
-    int chavesColetadas;
-    char nomeJogador[NOME];
-    float tempoJogo;
+    int chaves_coletadas;
+    char nome_jogador[NOME];
+    float tempo_jogo;
     int score;
     Coordenada posicao;
 
@@ -178,20 +178,20 @@ void desenha_chaves(Coordenada listachaves[])
 
 }
 }
-void testa_chaves(Coordenada listachaves[], int *jogador_x, int *jogador_y, int nomeJogador, int *chavesColetadas, int vidas, int tempoJogo, int modo_de_jogo)
+void testa_chaves(Coordenada listachaves[], int *jogador_x, int *jogador_y, int nome_jogador, int *chaves_coletadas, int vidas, int tempo_jogo, int modo_de_jogo)
 {
 int i=0;
 
 for(i=0; i<NUM_CHAVES; i++){
     if(listachaves[i].x == *jogador_x && listachaves[i].y == *jogador_y)
     {
-        *chavesColetadas += 1;
+        *chaves_coletadas += 1;
         textbackground(WHITE);
         putchxy(*jogador_x, *jogador_y, ' ');
 
         //textbackground(WHITE);
       //  putchxy(*jogador_x, *jogador_y, 'P');
-        desenha_placar(nomeJogador, *chavesColetadas, vidas, tempoJogo, modo_de_jogo);
+        desenha_placar(nome_jogador, *chaves_coletadas, vidas, tempo_jogo, modo_de_jogo);
 
 
 
@@ -199,21 +199,21 @@ for(i=0; i<NUM_CHAVES; i++){
     }
 }
 }
-void desenha_placar(int nomeJogador, int chavesColetadas, int vidas, float tempoJogo, int modo_de_jogo)
+void desenha_placar(int nome_jogador, int chaves_coletadas, int vidas, float tempo_jogo, int modo_de_jogo)
 {
     textbackground(BLACK);
     textcolor(WHITE);
     gotoxy(3, MAXY+1);
     if (modo_de_jogo)
     {
-        printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Dificil", nomeJogador, chavesColetadas, vidas, tempoJogo);
+        printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Dificil", nome_jogador, chaves_coletadas, vidas, tempo_jogo);
     }
     else
     {
-        printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Facil", nomeJogador, chavesColetadas, vidas, tempoJogo);
+        printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Facil", nome_jogador, chaves_coletadas, vidas, tempo_jogo);
     }
 }
-void testa_agentes(Coordenada listaagentes[], int *jogador_x, int *jogador_y, int nomeJogador, int chavesColetadas, int *vidas, int tempoJogo, int modo_de_jogo)
+void testa_agentes(Coordenada listaagentes[], int *jogador_x, int *jogador_y, int nome_jogador, int chaves_coletadas, int *vidas, int tempo_jogo, int modo_de_jogo)
 {
 int i=0;
 
@@ -242,7 +242,7 @@ for(i=0; i<NUM_AGENTES; i++){
         }
 
         putchxy(*jogador_x, *jogador_y, 'P');
-        desenha_placar(nomeJogador, chavesColetadas, *vidas, tempoJogo, modo_de_jogo);
+        desenha_placar(nome_jogador, chaves_coletadas, *vidas, tempo_jogo, modo_de_jogo);
 
 
 
@@ -250,7 +250,7 @@ for(i=0; i<NUM_AGENTES; i++){
     }
 }
 }
-void escolherModoJogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
+void escolher_modo_jogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
 {
 
     printf("Escolha o modo de jogo:");
@@ -336,7 +336,7 @@ int adiciona_ranking(int score,int modo_de_jogo)
         return(int) ((30000)/ score);
     }
 }
-int comp (const void * elem1, const void * elem2)
+int compara_ranking (const void * elem1, const void * elem2)
 {
     int f = *((int*)elem1);
     int s = *((int*)elem2);
@@ -397,9 +397,9 @@ int main()
     do
     {
         srand(time(NULL));
-        int nrank=0;
-        Jogador.tempoJogo = 0;
-        Jogador.chavesColetadas = 0;
+        int num_rank=0;
+        Jogador.tempo_jogo = 0;
+        Jogador.chaves_coletadas = 0;
         Jogador.vidas = 3;
         Jogador.posicao.x = 2 + rand() % (MAXX - 2);
         Jogador.posicao.y = 2 + rand() % (MAXY - 2);
@@ -407,15 +407,15 @@ int main()
         clrscr();
         fflush(stdin);
         puts("Insira o nome do jogador");
-        gets(Jogador.nomeJogador);
+        gets(Jogador.nome_jogador);
         clrscr();
 
-        escolherModoJogo(&num_paredes, &num_segmentos, &modo_de_jogo);
+        escolher_modo_jogo(&num_paredes, &num_segmentos, &modo_de_jogo);
         tempo_ini = clock();
 
 
 
-        desenha_placar(Jogador.nomeJogador, Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
+        desenha_placar(Jogador.nome_jogador, Jogador.chaves_coletadas, Jogador.vidas, Jogador.tempo_jogo, modo_de_jogo);
         desenha_cenario(MAXX, MAXY);
         desenha_jogador(Jogador.posicao.x, Jogador.posicao.y);
         desenha_agente(listaagentes);
@@ -424,8 +424,8 @@ int main()
 
         do
         {
-            testa_agentes(listaagentes, &Jogador.posicao.x, &Jogador.posicao.y, Jogador.nomeJogador, Jogador.chavesColetadas, &Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
-            testa_chaves(listachaves, &Jogador.posicao.x, &Jogador.posicao.y, Jogador.nomeJogador, &Jogador.chavesColetadas, Jogador.vidas, Jogador.tempoJogo, modo_de_jogo);
+            testa_agentes(listaagentes, &Jogador.posicao.x, &Jogador.posicao.y, Jogador.nome_jogador, Jogador.chaves_coletadas, &Jogador.vidas, Jogador.tempo_jogo, modo_de_jogo);
+            testa_chaves(listachaves, &Jogador.posicao.x, &Jogador.posicao.y, Jogador.nome_jogador, &Jogador.chaves_coletadas, Jogador.vidas, Jogador.tempo_jogo, modo_de_jogo);
             if(kbhit())
             {
                 tecla = getch();
@@ -438,9 +438,9 @@ int main()
         num_partidas++;
 
         Jogador.score = gera_score(tempo_ini, tempo_fim);
-        ranking[nrank] = adiciona_ranking(Jogador.score, modo_de_jogo);
-        nrank++;
-        qsort (ranking, sizeof(ranking)/sizeof(*ranking), sizeof(*ranking), comp);
+        ranking[num_rank] = adiciona_ranking(Jogador.score, modo_de_jogo);
+        num_rank++;
+        qsort (ranking, sizeof(ranking)/sizeof(*ranking), sizeof(*ranking), compara_ranking);
 
     }
     while(num_partidas < NUM_RANK);

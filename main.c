@@ -188,7 +188,8 @@ for(i=0; i<NUM_CHAVES; i++){
         *chaves_coletadas += 1;
         textbackground(WHITE);
         putchxy(*jogador_x, *jogador_y, ' ');
-
+        listachaves[i].x=1;
+        listachaves[i].y=1;
         //textbackground(WHITE);
       //  putchxy(*jogador_x, *jogador_y, 'P');
         desenha_placar(nome_jogador, *chaves_coletadas, vidas, tempo_jogo, modo_de_jogo);

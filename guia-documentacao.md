@@ -17,6 +17,7 @@ Todas as constantes devem estar contidas após os includes, e devem ser escritas
 Todas as variáveis devem ser escritas em letras minusculas. Variaveis com nomes espaçados devem ser separados por underscore("_").
 
 `int minha_variavel = valor`
+
 `char caractere = valor`
 
 Variáveis que são indicativas de quantidade devem ser precedidas de "num", como a seguir:

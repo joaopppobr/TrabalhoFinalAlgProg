@@ -21,7 +21,7 @@ typedef struct
     int y;
 } Coordenada;
 
-typedef struct Jogador
+typedef struct
 {
     int vidas;
     int chaves_coletadas;
@@ -153,9 +153,9 @@ void desenha_agente(Coordenada listaagentes[])
         listaagentes[j].x =  2 + (rand() % (MAXX - 2));
         listaagentes[j].y = 2 + (rand() % (MAXY - 2));
 
-            textbackground(RED);
-            textcolor(RED);
-            putchxy(listaagentes[j].x, listaagentes[j].y, agente);
+        textbackground(RED);
+        textcolor(RED);
+        putchxy(listaagentes[j].x, listaagentes[j].y, agente);
     }
 }
 void desenha_chaves(Coordenada listachaves[])
@@ -169,9 +169,9 @@ void desenha_chaves(Coordenada listachaves[])
         listachaves[j].y = rand() % (MAXY - 4) + 2;
 
 
-            textbackground(YELLOW);
-            textcolor(YELLOW);
-            putchxy(listachaves[j].x, listachaves[j].y, ' ');
+        textbackground(YELLOW);
+        textcolor(YELLOW);
+        putchxy(listachaves[j].x, listachaves[j].y, ' ');
 
     }
 }
@@ -214,7 +214,7 @@ void testa_agentes(Coordenada listaagentes[], int *jogador_x, int *jogador_y, ch
 {
     int i=0;
 
-     for(i=0; i<NUM_AGENTES; i++)
+    for(i=0; i<NUM_AGENTES; i++)
     {
         if(listaagentes[i].x == *jogador_x && listaagentes[i].y == *jogador_y)
         {
@@ -363,13 +363,24 @@ int testa_paredes (Coordenada listaparedes[], int *jogador_x, int *jogador_y, in
 
 }
 
+void salva_ranking(char nome_jogador[], int score)
+{
+    FILE *arq;
+    arq = fopen("ranking.csv", "a+");
+    if(arq == NULL)
+    {
+        printf("erro ao abrir arquivo");
+    }
+    else
+    {
+        fprintf(arq, "%s;%d\n", nome_jogador, score);
+        fclose(arq);
+    }
+}
 int main()
 {
 
-    struct Jogador Jogador;
-    struct agente;
-    struct Chave;
-    struct Coordenada;
+    JOGADOR Jogador;
 
     int ch;
     int tecla;
@@ -387,7 +398,7 @@ int main()
 
     clock_t tempo_ini, tempo_fim;
 
-        srand(time(NULL));
+    srand(time(NULL));
 
     do
     {
@@ -406,7 +417,6 @@ int main()
 
         escolher_modo_jogo(&num_paredes, &num_segmentos, &modo_de_jogo);
         tempo_ini = clock();
-
 
 
         desenha_placar(Jogador.nome_jogador, Jogador.chaves_coletadas, Jogador.vidas, Jogador.tempo_jogo, modo_de_jogo);
@@ -433,19 +443,22 @@ int main()
 
         Jogador.score = gera_score(tempo_ini, tempo_fim);
         ranking[num_rank] = adiciona_ranking(Jogador.score, modo_de_jogo);
+        salva_ranking(Jogador.nome_jogador, ranking[num_rank]);
         num_rank++;
         qsort (ranking, sizeof(ranking)/sizeof(*ranking), sizeof(*ranking), compara_ranking);
 
-        if (Jogador.chaves_coletadas == NUM_CHAVES) {
-                clrscr();
-        printf("\n\t\t\tVoce ganhou!\n\n");
-        printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.score);
+        if (Jogador.chaves_coletadas == NUM_CHAVES)
+        {
+            clrscr();
+            printf("\n\t\t\tVoce ganhou!\n\n");
+            printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.score);
         }
 
-        if(Jogador.vidas == 0) {
+        if(Jogador.vidas == 0)
+        {
             clrscr();
             printf("\n\t\t\tVoce perdeu!\n\n");
-        printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.score);
+            printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.score);
         }
 
         Sleep(3000);

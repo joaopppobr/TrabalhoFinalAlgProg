@@ -42,7 +42,7 @@ typedef struct
 void desenha_cenario(int limite_x, int limite_y)
 {
     int i=0;
-
+system("COLOR 70");
     for (i=0; i<limite_x; i++)
     {
         if(limite_x == MAXX)
@@ -98,7 +98,7 @@ void movimenta_jogador(int *x,int *y, int ch, Coordenada listaparedes[], int num
     case 75:
         if(*x > 2 && testa_paredes(listaparedes, x, y, num_paredes))
         {
-            textbackground(BLACK);
+            textbackground(7);
             putchxy(*x, *y, ' ');
             *x-= 1;
             textbackground(WHITE);
@@ -109,7 +109,7 @@ void movimenta_jogador(int *x,int *y, int ch, Coordenada listaparedes[], int num
     case 77:
         if(*x <= MAXX-2 && testa_paredes(listaparedes, x, y, num_paredes))
         {
-            textbackground(BLACK);
+            textbackground(7);
             putchxy(*x, *y, ' ');
             *x+= 1;
             textbackground(WHITE);
@@ -120,7 +120,7 @@ void movimenta_jogador(int *x,int *y, int ch, Coordenada listaparedes[], int num
     case 72:
         if(*y > 2 && testa_paredes(listaparedes, x, y, num_paredes))
         {
-            textbackground(BLACK);
+            textbackground(7);
             putchxy(*x, *y, ' ');
             *y-= 1;
             textbackground(WHITE);
@@ -131,7 +131,7 @@ void movimenta_jogador(int *x,int *y, int ch, Coordenada listaparedes[], int num
     case 80:
         if(*y <= MAXY-2 && testa_paredes(listaparedes, x, y, num_paredes))
         {
-            textbackground(BLACK);
+            textbackground(7);
             putchxy(*x, *y, ' ');
             *y+=1;
             textbackground(WHITE);
@@ -198,8 +198,8 @@ void testa_chaves(Coordenada listachaves[], int *jogador_x, int *jogador_y, int 
 }
 void desenha_placar(char nome_jogador[], int chaves_coletadas, int vidas, float tempo_jogo, int modo_de_jogo)
 {
-    textbackground(BLACK);
-    textcolor(WHITE);
+    textbackground(7);
+    textcolor(BLACK);
     gotoxy(3, MAXY+1);
     if (modo_de_jogo)
     {
@@ -363,18 +363,48 @@ int testa_paredes (Coordenada listaparedes[], int *jogador_x, int *jogador_y, in
 
 }
 
-void salva_ranking(char nome_jogador[], int score)
+int salva_ranking(char nome_jogador[], int score)
 {
     FILE *arq;
     arq = fopen("ranking.csv", "a+");
-    if(arq == NULL)
+    int num_linhas = 0;
+    char nome_temp[NOME];
+    char linha[50];
+    int score_temp;
+    int temp = 1;
+    if(arq == NULL || ferror(arq))
     {
         printf("erro ao abrir arquivo");
+        return(0);
     }
     else
     {
-        fprintf(arq, "%s;%d\n", nome_jogador, score);
-        fclose(arq);
+        while(!feof(arq) && num_linhas < 10)
+        {
+            num_linhas++;
+            fgets(linha, 50, arq);
+            nome_temp[NOME] = strtok(linha, ";");
+            score_temp = atoi(strtok(linha, ";"));
+            if(temp)
+            {
+                if(score_temp < score)
+                {
+                    fprintf(arq, "%s;%d\n", nome_jogador, score);
+                }
+                else
+                {
+                    fprintf(arq, "%s;%d\n", nome_temp, score_temp);
+                    fprintf(arq, "%s;%d\n", nome_jogador, score);
+                    temp = 0;
+                    num_linhas++;
+                }
+            }
+            else
+            {
+                fprintf(arq, "%s;%d\n", nome_temp, score_temp);
+            }
+        }
+         fclose(arq);
     }
 }
 int main()

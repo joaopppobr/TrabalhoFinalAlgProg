@@ -62,8 +62,27 @@ typedef struct
 }
 JOGO;
 
-int carrega_jogo(JOGO*jogo, char nome_jogador, int modo_de_jogo){
-
+int carrega_jogo(JOGO jogo, char nome_jogador, int modo_de_jogo){
+FILE *arq;
+JOGO buffer;
+if(!(arq= fopen("jogo.bin","rb"))) {
+    printf("Erro ao abrir o arquivo");
+    return(0);
+}
+else {
+    while(!feof(arq)){
+        if (fread(&buffer,sizeof(JOGO),1,arq)== 1) {
+            if (nome_jogador == *buffer.jogador.nome_jogador) {
+                jogo = buffer;
+            }
+            else {
+                printf("Jogador nao encontrado\n");
+            }
+        }
+    }
+    fclose(arq);
+    return(1);
+}
 }
 
 int salva_jogo(JOGO jogo) {
@@ -434,31 +453,7 @@ int salva_ranking(char nome_jogador[], int score)
     }
     else
     {
-        while(!feof(arq) && num_linhas < 10)
-        {
-            num_linhas++;
-            fgets(linha, 50, arq);
-            nome_temp[NOME] = strtok(linha, ";");
-            score_temp = atoi(strtok(linha, ";"));
-            if(temp)
-            {
-                if(score_temp < score)
-                {
                     fprintf(arq, "%s;%d\n", nome_jogador, score);
-                }
-                else
-                {
-                    fprintf(arq, "%s;%d\n", nome_temp, score_temp);
-                    fprintf(arq, "%s;%d\n", nome_jogador, score);
-                    temp = 0;
-                    num_linhas++;
-                }
-            }
-            else
-            {
-                fprintf(arq, "%s;%d\n", nome_temp, score_temp);
-            }
-        }
         fclose(arq);
     }
 }
@@ -514,6 +509,7 @@ int main()
         fflush(stdin);
         puts("Insira o nome do jogador");
         gets(Jogador.nome_jogador);
+        carrega_jogo(jogo, Jogador.nome_jogador, Jogador.modo_de_jogo);
         clrscr();
 
         escolher_modo_jogo(&num_paredes, &num_segmentos, &Jogador.modo_de_jogo);

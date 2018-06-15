@@ -19,7 +19,8 @@ typedef struct
 {
     int x;
     int y;
-} Coordenada;
+}
+Coordenada;
 
 typedef struct
 {
@@ -39,15 +40,27 @@ typedef struct
 {
     int status;
     Coordenada posicao;
-} CHAVE;
+}
+CHAVE;
+
+typedef struct {
+    Coordenada posicao;
+}
+PAREDE;
+
+typedef struct {
+    Coordenada posicao;
+}
+AGENTE;
 
 typedef struct
 {
     JOGADOR jogador;
-    //AGENTEagentes[NUM_AGENTES];
+    AGENTE listaagentes[NUM_AGENTES];
     CHAVE Chaves[NUM_CHAVES];
-    //PAREDE paredes[NUM_PAREDES];
-} JOGO;
+    PAREDE listaparedes[];
+}
+JOGO;
 
 int carrega_jogo(JOGO*jogo, char nome_jogador, int modo_de_jogo){
 
@@ -66,6 +79,7 @@ return(1);
 }
 
 }
+
 void desenha_cenario(int limite_x, int limite_y)
 {
     int i=0;
@@ -106,6 +120,7 @@ void desenha_cenario(int limite_x, int limite_y)
         }
     }
 }
+
 void desenha_jogador(int x, int y)
 {
     char jogador = 'P';
@@ -114,6 +129,7 @@ void desenha_jogador(int x, int y)
     textcolor(GREEN);
     putchxy(x, y, jogador);
 }
+
 void movimenta_jogador(int *x,int *y, int ch, Coordenada listaparedes[], int num_paredes)
 {
 
@@ -170,6 +186,7 @@ void movimenta_jogador(int *x,int *y, int ch, Coordenada listaparedes[], int num
 
 
 }
+
 void desenha_agente(Coordenada listaagentes[])
 {
     int j;
@@ -185,6 +202,7 @@ void desenha_agente(Coordenada listaagentes[])
         putchxy(listaagentes[j].x, listaagentes[j].y, agente);
     }
 }
+
 void desenha_CHAVEs(Coordenada listaCHAVEs[])
 {
     srand(time(NULL));
@@ -202,6 +220,7 @@ void desenha_CHAVEs(Coordenada listaCHAVEs[])
 
     }
 }
+
 void testa_CHAVEs(Coordenada listaCHAVEs[], int *jogador_x, int *jogador_y, int nome_jogador, int *CHAVEs_coletadas, int vidas, int tempo_jogo, int modo_de_jogo)
 {
     int i=0;
@@ -223,6 +242,7 @@ void testa_CHAVEs(Coordenada listaCHAVEs[], int *jogador_x, int *jogador_y, int 
         }
     }
 }
+
 void desenha_placar(char nome_jogador[], int CHAVEs_coletadas, int vidas, float tempo_jogo, int modo_de_jogo)
 {
     textbackground(7);
@@ -237,6 +257,7 @@ void desenha_placar(char nome_jogador[], int CHAVEs_coletadas, int vidas, float 
         printf("Nome: %s \t\tCHAVEs coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Facil", nome_jogador, CHAVEs_coletadas, vidas, tempo_jogo);
     }
 }
+
 void testa_agentes(Coordenada listaagentes[], int *jogador_x, int *jogador_y, char nome_jogador[], int CHAVEs_coletadas, int *vidas, int tempo_jogo, int modo_de_jogo)
 {
     int i=0;
@@ -269,6 +290,7 @@ void testa_agentes(Coordenada listaagentes[], int *jogador_x, int *jogador_y, ch
         }
     }
 }
+
 void escolher_modo_jogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
 {
 
@@ -289,6 +311,7 @@ void escolher_modo_jogo(int *num_paredes, int *num_segmentos, int *modo_de_jogo)
 
 
 }
+
 void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[], int *jogador_x, int *jogador_y)
 {
     srand(time(NULL));
@@ -339,10 +362,12 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[],
         }
     }
 }
+
 int gera_score(clock_t tempo_ini, clock_t tempo_fim)
 {
     return (int) ((tempo_fim - tempo_ini) / CLOCKS_PER_SEC);
 }
+
 int adiciona_ranking(int score,int modo_de_jogo)
 {
 
@@ -355,6 +380,7 @@ int adiciona_ranking(int score,int modo_de_jogo)
         return(int) ((30000)/ score);
     }
 }
+
 int compara_ranking (const void * elem1, const void * elem2)
 {
     int f = *((int*)elem1);
@@ -365,11 +391,13 @@ int compara_ranking (const void * elem1, const void * elem2)
         return -1;
     return 0;
 }
+
 void exibe_ranking(int ranking[NUM_RANK])
 {
     for (int i = 0 ; i < NUM_RANK ; i++)
         printf ("\n\t\t%d \n", ranking[i]);
 }
+
 int testa_paredes (Coordenada listaparedes[], int *jogador_x, int *jogador_y, int num_paredes)
 {
     int i=0;
@@ -435,13 +463,26 @@ int salva_ranking(char nome_jogador[], int score)
     }
 }
 
+void mensagem_final(JOGADOR Jogador) {
+if (Jogador.CHAVEs_coletadas == NUM_CHAVES)
+        {
+            clrscr();
+            printf("\n\t\t\tVoce ganhou!\n\n");
+            printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.score);
+        }
+
+        if(Jogador.vidas == 0)
+        {
+            clrscr();
+            printf("\n\t\t\tVoce perdeu!\n\n");
+            printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.score);
+        }
+
+        Sleep(3000);
+}
 
 int main()
 {
-
-    JOGADOR Jogador;
-    JOGO jogo;
-
     int ch;
     int tecla;
     int num_paredes = 0;
@@ -450,10 +491,11 @@ int main()
     int num_partidas = 0;
     int ranking[NUM_RANK] = {-1};
 
-    Coordenada listaparedes[num_paredes];
+    JOGADOR Jogador;
+    JOGO jogo;
+    PAREDE listaparedes[num_paredes];
     CHAVE listaCHAVEs[NUM_CHAVES];
-    Coordenada listaagentes[NUM_AGENTES];
-
+    AGENTE listaagentes[NUM_AGENTES];
 
     clock_t tempo_ini, tempo_fim;
 
@@ -477,7 +519,6 @@ int main()
         escolher_modo_jogo(&num_paredes, &num_segmentos, &Jogador.modo_de_jogo);
         tempo_ini = clock();
 
-
         desenha_placar(Jogador.nome_jogador, Jogador.CHAVEs_coletadas, Jogador.vidas, Jogador.tempo_jogo, Jogador.modo_de_jogo);
         desenha_cenario(MAXX, MAXY);
         desenha_jogador(Jogador.posicao.x, Jogador.posicao.y);
@@ -497,6 +538,7 @@ int main()
 
         }
         while(Jogador.CHAVEs_coletadas < NUM_CHAVES && Jogador.vidas > 0);
+
         tempo_fim = clock();
         num_partidas++;
         salva_jogo(jogo);
@@ -506,23 +548,7 @@ int main()
         salva_ranking(Jogador.nome_jogador, ranking[num_rank]);
         num_rank++;
         qsort (ranking, sizeof(ranking)/sizeof(*ranking), sizeof(*ranking), compara_ranking);
-
-        if (Jogador.CHAVEs_coletadas == NUM_CHAVES)
-        {
-            clrscr();
-            printf("\n\t\t\tVoce ganhou!\n\n");
-            printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.score);
-        }
-
-        if(Jogador.vidas == 0)
-        {
-            clrscr();
-            printf("\n\t\t\tVoce perdeu!\n\n");
-            printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.score);
-        }
-
-        Sleep(3000);
-
+        mensagem_final(Jogador);
 
     }
     while(num_partidas < NUM_RANK);

@@ -62,7 +62,7 @@ typedef struct
 }
 JOGO;
 
-int carrega_jogo(JOGO jogo, char nome_jogador, int modo_de_jogo){
+int carrega_jogo(JOGO jogo, char nome_jogador[], int modo_de_jogo){
 FILE *arq;
 JOGO buffer;
 if(!(arq= fopen("jogo.bin","rb"))) {
@@ -72,7 +72,7 @@ if(!(arq= fopen("jogo.bin","rb"))) {
 else {
     while(!feof(arq)){
         if (fread(&buffer,sizeof(JOGO),1,arq)== 1) {
-            if (nome_jogador == *buffer.jogador.nome_jogador) {
+            if (nome_jogador == buffer.jogador.nome_jogador) {
                 jogo = buffer;
             }
             else {
@@ -206,19 +206,19 @@ void movimenta_jogador(int *x,int *y, int ch, Coordenada listaparedes[], int num
 
 }
 
-void desenha_agente(Coordenada listaagentes[])
+void desenha_agente(AGENTE listaagentes[])
 {
     int j;
     char agente = 'G';
 
     for(j=0; j<NUM_AGENTES; j++)
     {
-        listaagentes[j].x =  2 + (rand() % (MAXX - 2));
-        listaagentes[j].y = 2 + (rand() % (MAXY - 2));
+        listaagentes[j].posicao.x =  2 + (rand() % (MAXX - 2));
+        listaagentes[j].posicao.y = 2 + (rand() % (MAXY - 2));
 
         textbackground(RED);
         textcolor(RED);
-        putchxy(listaagentes[j].x, listaagentes[j].y, agente);
+        putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, agente);
     }
 }
 
@@ -240,7 +240,7 @@ void desenha_CHAVEs(Coordenada listaCHAVEs[])
     }
 }
 
-void testa_CHAVEs(Coordenada listaCHAVEs[], int *jogador_x, int *jogador_y, int nome_jogador, int *CHAVEs_coletadas, int vidas, int tempo_jogo, int modo_de_jogo)
+void testa_CHAVEs(Coordenada listaCHAVEs[], int *jogador_x, int *jogador_y, int nome_jogador[], int *CHAVEs_coletadas, int vidas, int tempo_jogo, int modo_de_jogo)
 {
     int i=0;
 
@@ -350,7 +350,7 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[],
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparedes[i].x, listaparedes[i].y - j, '   ');
+                putchxy(listaparedes[i].x, listaparedes[i].y - j, ' ');
                 textbackground(BLUE);
             }
             break;
@@ -358,7 +358,7 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[],
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparedes[i].x, listaparedes[i].y + j, '   ');
+                putchxy(listaparedes[i].x, listaparedes[i].y + j, ' ');
                 textbackground(BLUE);
             }
             break;
@@ -366,7 +366,7 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[],
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparedes[i].x + j, listaparedes[i].y, '   ');
+                putchxy(listaparedes[i].x + j, listaparedes[i].y, ' ');
                 textbackground(BLUE);
             }
             break;
@@ -374,7 +374,7 @@ void gera_paredes(int num_paredes, int num_segmentos, Coordenada listaparedes[],
             for(j=0; j<num_segmentos; j++)
             {
                 textbackground(BLUE);
-                putchxy(listaparedes[i].x - j, listaparedes[i].y, '   ');
+                putchxy(listaparedes[i].x - j, listaparedes[i].y, ' ');
                 textbackground(BLUE);
             }
             break;
@@ -425,27 +425,22 @@ int testa_paredes (Coordenada listaparedes[], int *jogador_x, int *jogador_y, in
     {
         if(listaparedes[i].x == *jogador_x && listaparedes[i].y == *jogador_y)
         {
-            return(int)(0);
+            return(0);
         }
 
         else
         {
-            return (int) (1);
+            return(1);
         }
 
     }
-
+return(0);
 }
 
 int salva_ranking(char nome_jogador[], int score)
 {
     FILE *arq;
     arq = fopen("ranking.csv", "a+");
-    int num_linhas = 0;
-    char nome_temp[NOME];
-    char linha[50];
-    int score_temp;
-    int temp = 1;
     if(arq == NULL || ferror(arq))
     {
         printf("erro ao abrir arquivo");
@@ -455,6 +450,7 @@ int salva_ranking(char nome_jogador[], int score)
     {
                     fprintf(arq, "%s;%d\n", nome_jogador, score);
         fclose(arq);
+        return(1);
     }
 }
 
@@ -478,7 +474,6 @@ if (Jogador.CHAVEs_coletadas == NUM_CHAVES)
 
 int main()
 {
-    int ch;
     int tecla;
     int num_paredes = 0;
     int num_segmentos = 5;
@@ -518,7 +513,7 @@ int main()
         desenha_placar(Jogador.nome_jogador, Jogador.CHAVEs_coletadas, Jogador.vidas, Jogador.tempo_jogo, Jogador.modo_de_jogo);
         desenha_cenario(MAXX, MAXY);
         desenha_jogador(Jogador.posicao.x, Jogador.posicao.y);
-        desenha_agente(listaagentes);
+        desenha_agente(&listaagentes);
         desenha_CHAVEs(listaCHAVEs);
         gera_paredes(num_paredes, num_segmentos, listaparedes, &Jogador.posicao.x, &Jogador.posicao.y);
 

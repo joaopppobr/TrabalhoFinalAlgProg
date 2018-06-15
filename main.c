@@ -24,11 +24,13 @@ typedef struct
 typedef struct
 {
     int vidas;
-    int chaves_coletadas;
+    int CHAVEs_coletadas;
     char nome_jogador[NOME];
     float tempo_jogo;
     int score;
+    int modo_de_jogo;
     Coordenada posicao;
+
 
 }
 JOGADOR;
@@ -37,12 +39,37 @@ typedef struct
 {
     int status;
     Coordenada posicao;
-} Chave;
+} CHAVE;
 
+typedef struct
+{
+    JOGADOR jogador;
+    //AGENTEagentes[NUM_AGENTES];
+    CHAVE Chaves[NUM_CHAVES];
+    //PAREDE paredes[NUM_PAREDES];
+} JOGO;
+
+int carrega_jogo(JOGO*jogo, char nome_jogador, int modo_de_jogo){
+
+}
+
+int salva_jogo(JOGO jogo) {
+FILE *arq;
+if(!(arq = fopen("jogo.bin","wb"))){
+    printf("Erro ao abrir o arquivo");
+    return(0);
+}
+else{
+fwrite(&jogo,sizeof(JOGO),1,arq);
+fclose(arq);
+return(1);
+}
+
+}
 void desenha_cenario(int limite_x, int limite_y)
 {
     int i=0;
-system("COLOR 70");
+    system("COLOR 70");
     for (i=0; i<limite_x; i++)
     {
         if(limite_x == MAXX)
@@ -158,37 +185,37 @@ void desenha_agente(Coordenada listaagentes[])
         putchxy(listaagentes[j].x, listaagentes[j].y, agente);
     }
 }
-void desenha_chaves(Coordenada listachaves[])
+void desenha_CHAVEs(Coordenada listaCHAVEs[])
 {
     srand(time(NULL));
     int j;
 
     for(j=0; j<NUM_CHAVES; j++)
     {
-        listachaves[j].x = rand() % (MAXX - 3) + 1;
-        listachaves[j].y = rand() % (MAXY - 4) + 2;
+        listaCHAVEs[j].x = rand() % (MAXX - 3) + 1;
+        listaCHAVEs[j].y = rand() % (MAXY - 4) + 2;
 
 
         textbackground(YELLOW);
         textcolor(YELLOW);
-        putchxy(listachaves[j].x, listachaves[j].y, ' ');
+        putchxy(listaCHAVEs[j].x, listaCHAVEs[j].y, ' ');
 
     }
 }
-void testa_chaves(Coordenada listachaves[], int *jogador_x, int *jogador_y, int nome_jogador, int *chaves_coletadas, int vidas, int tempo_jogo, int modo_de_jogo)
+void testa_CHAVEs(Coordenada listaCHAVEs[], int *jogador_x, int *jogador_y, int nome_jogador, int *CHAVEs_coletadas, int vidas, int tempo_jogo, int modo_de_jogo)
 {
     int i=0;
 
     for(i=0; i<NUM_CHAVES; i++)
     {
-        if(listachaves[i].x == *jogador_x && listachaves[i].y == *jogador_y)
+        if(listaCHAVEs[i].x == *jogador_x && listaCHAVEs[i].y == *jogador_y)
         {
-            *chaves_coletadas += 1;
+            *CHAVEs_coletadas += 1;
             textbackground(WHITE);
             putchxy(*jogador_x, *jogador_y, ' ');
-            listachaves[i].x=1;
-            listachaves[i].y=1;
-            desenha_placar(nome_jogador, *chaves_coletadas, vidas, tempo_jogo, modo_de_jogo);
+            listaCHAVEs[i].x=1;
+            listaCHAVEs[i].y=1;
+            desenha_placar(nome_jogador, *CHAVEs_coletadas, vidas, tempo_jogo, modo_de_jogo);
 
 
 
@@ -196,21 +223,21 @@ void testa_chaves(Coordenada listachaves[], int *jogador_x, int *jogador_y, int 
         }
     }
 }
-void desenha_placar(char nome_jogador[], int chaves_coletadas, int vidas, float tempo_jogo, int modo_de_jogo)
+void desenha_placar(char nome_jogador[], int CHAVEs_coletadas, int vidas, float tempo_jogo, int modo_de_jogo)
 {
     textbackground(7);
     textcolor(BLACK);
     gotoxy(3, MAXY+1);
     if (modo_de_jogo)
     {
-        printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Dificil", nome_jogador, chaves_coletadas, vidas, tempo_jogo);
+        printf("Nome: %s \t\tCHAVEs coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Dificil", nome_jogador, CHAVEs_coletadas, vidas, tempo_jogo);
     }
     else
     {
-        printf("Nome: %s \t\tChaves coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Facil", nome_jogador, chaves_coletadas, vidas, tempo_jogo);
+        printf("Nome: %s \t\tCHAVEs coletadas: %d \t\tVidas: %d \nTempor de jogo: %f\t\tModo de jogo: Facil", nome_jogador, CHAVEs_coletadas, vidas, tempo_jogo);
     }
 }
-void testa_agentes(Coordenada listaagentes[], int *jogador_x, int *jogador_y, char nome_jogador[], int chaves_coletadas, int *vidas, int tempo_jogo, int modo_de_jogo)
+void testa_agentes(Coordenada listaagentes[], int *jogador_x, int *jogador_y, char nome_jogador[], int CHAVEs_coletadas, int *vidas, int tempo_jogo, int modo_de_jogo)
 {
     int i=0;
 
@@ -238,7 +265,7 @@ void testa_agentes(Coordenada listaagentes[], int *jogador_x, int *jogador_y, ch
                 *jogador_y-= 2;
             }
             putchxy(*jogador_x, *jogador_y, 'P');
-            desenha_placar(nome_jogador, chaves_coletadas, *vidas, tempo_jogo, modo_de_jogo);
+            desenha_placar(nome_jogador, CHAVEs_coletadas, *vidas, tempo_jogo, modo_de_jogo);
         }
     }
 }
@@ -404,25 +431,27 @@ int salva_ranking(char nome_jogador[], int score)
                 fprintf(arq, "%s;%d\n", nome_temp, score_temp);
             }
         }
-         fclose(arq);
+        fclose(arq);
     }
 }
+
+
 int main()
 {
 
     JOGADOR Jogador;
+    JOGO jogo;
 
     int ch;
     int tecla;
     int num_paredes = 0;
     int num_segmentos = 5;
-    int modo_de_jogo = 0;
 
     int num_partidas = 0;
     int ranking[NUM_RANK] = {-1};
 
     Coordenada listaparedes[num_paredes];
-    Chave listachaves[NUM_CHAVES];
+    CHAVE listaCHAVEs[NUM_CHAVES];
     Coordenada listaagentes[NUM_AGENTES];
 
 
@@ -434,7 +463,7 @@ int main()
     {
         int num_rank=0;
         Jogador.tempo_jogo = 0;
-        Jogador.chaves_coletadas = 0;
+        Jogador.CHAVEs_coletadas = 0;
         Jogador.vidas = 3;
         Jogador.posicao.x = 2 + rand() % (MAXX - 2);
         Jogador.posicao.y = 2 + rand() % (MAXY - 2);
@@ -445,21 +474,21 @@ int main()
         gets(Jogador.nome_jogador);
         clrscr();
 
-        escolher_modo_jogo(&num_paredes, &num_segmentos, &modo_de_jogo);
+        escolher_modo_jogo(&num_paredes, &num_segmentos, &Jogador.modo_de_jogo);
         tempo_ini = clock();
 
 
-        desenha_placar(Jogador.nome_jogador, Jogador.chaves_coletadas, Jogador.vidas, Jogador.tempo_jogo, modo_de_jogo);
+        desenha_placar(Jogador.nome_jogador, Jogador.CHAVEs_coletadas, Jogador.vidas, Jogador.tempo_jogo, Jogador.modo_de_jogo);
         desenha_cenario(MAXX, MAXY);
         desenha_jogador(Jogador.posicao.x, Jogador.posicao.y);
         desenha_agente(listaagentes);
-        desenha_chaves(listachaves);
+        desenha_CHAVEs(listaCHAVEs);
         gera_paredes(num_paredes, num_segmentos, listaparedes, &Jogador.posicao.x, &Jogador.posicao.y);
 
         do
         {
-            testa_agentes(listaagentes, &Jogador.posicao.x, &Jogador.posicao.y, Jogador.nome_jogador, Jogador.chaves_coletadas, &Jogador.vidas, Jogador.tempo_jogo, modo_de_jogo);
-            testa_chaves(listachaves, &Jogador.posicao.x, &Jogador.posicao.y, Jogador.nome_jogador, &Jogador.chaves_coletadas, Jogador.vidas, Jogador.tempo_jogo, modo_de_jogo);
+            testa_agentes(listaagentes, &Jogador.posicao.x, &Jogador.posicao.y, Jogador.nome_jogador, Jogador.CHAVEs_coletadas, &Jogador.vidas, Jogador.tempo_jogo, Jogador.modo_de_jogo);
+            testa_CHAVEs(listaCHAVEs, &Jogador.posicao.x, &Jogador.posicao.y, Jogador.nome_jogador, &Jogador.CHAVEs_coletadas, Jogador.vidas, Jogador.tempo_jogo, Jogador.modo_de_jogo);
             if(kbhit())
             {
                 tecla = getch();
@@ -467,17 +496,18 @@ int main()
             }
 
         }
-        while(Jogador.chaves_coletadas < NUM_CHAVES && Jogador.vidas > 0);
+        while(Jogador.CHAVEs_coletadas < NUM_CHAVES && Jogador.vidas > 0);
         tempo_fim = clock();
         num_partidas++;
+        salva_jogo(jogo);
 
         Jogador.score = gera_score(tempo_ini, tempo_fim);
-        ranking[num_rank] = adiciona_ranking(Jogador.score, modo_de_jogo);
+        ranking[num_rank] = adiciona_ranking(Jogador.score, Jogador.modo_de_jogo);
         salva_ranking(Jogador.nome_jogador, ranking[num_rank]);
         num_rank++;
         qsort (ranking, sizeof(ranking)/sizeof(*ranking), sizeof(*ranking), compara_ranking);
 
-        if (Jogador.chaves_coletadas == NUM_CHAVES)
+        if (Jogador.CHAVEs_coletadas == NUM_CHAVES)
         {
             clrscr();
             printf("\n\t\t\tVoce ganhou!\n\n");

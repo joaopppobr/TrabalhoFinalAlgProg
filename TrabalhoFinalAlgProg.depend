@@ -9,3 +9,15 @@
 	<unistd.h>
 	<dos.h>
 
+1529965271 source:j:\github\trabalhofinalalgprog\jogofinal.c
+	<stdio.h>
+	<stdlib.h>
+	<conio2.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+	<dos.h>
+	<math.h>
+	<stddef.h>
+

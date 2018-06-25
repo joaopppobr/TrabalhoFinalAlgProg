@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <dos.h>
 #include <math.h>
+#define _TIME_H
+#include <stddef.h>
 
 #define MAXX 80
 #define MAXY 24
@@ -16,6 +18,7 @@
 #define COORDENADAS 2
 #define NUM_AGENTES 4
 #define NUM_SEGMENTOS 5
+
 
 typedef struct
 {
@@ -220,12 +223,12 @@ void desenha_jogador(JOGADOR *Jogador)
     textcolor(GREEN);
     putchxy(Jogador->posicao.x, Jogador->posicao.y, jogador);
 }
-void movimenta_jogador(JOGADOR *Jogador, int ch, PAREDE listaparedes[], int num_paredes)
+void movimenta_jogador(JOGADOR *Jogador, int *ch, PAREDE listaparedes[], int num_paredes)
 {
     char jogador = 'P';
 
 
-    switch(ch)
+    switch(*ch)
     {
     case 75:
         Jogador->posicao.x -= 1;
@@ -339,12 +342,12 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
             listaagentes[j].posicao.x-= 1;
             if(listaagentes[j].posicao.x > 1 && testaparedes(listaparedes, &listaagentes[j].posicao.x, &listaagentes[j].posicao.y, num_paredes))
             {
-                    textbackground(7);
-                    putchxy(listaagentes[j].posicao.x+1, listaagentes[j].posicao.y, ' ');
-                    textbackground(7);
-                    textbackground(RED);
-                    textcolor(RED);
-                    putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
+                textbackground(7);
+                putchxy(listaagentes[j].posicao.x+1, listaagentes[j].posicao.y, ' ');
+                textbackground(7);
+                textbackground(RED);
+                textcolor(RED);
+                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
             }
         }
         break;
@@ -355,13 +358,13 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
             listaagentes[j].posicao.x+= 1;
             if(listaagentes[j].posicao.x<= MAXX-1 && testaparedes(listaparedes, &listaagentes[j].posicao.x, &listaagentes[j].posicao.y, num_paredes))
             {
-                    textbackground(7);
-                    putchxy(listaagentes[j].posicao.x-1, listaagentes[j].posicao.y, ' ');
-                    textbackground(7);
-                    textbackground(RED);
-                    textcolor(RED);
-                    putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
-                }
+                textbackground(7);
+                putchxy(listaagentes[j].posicao.x-1, listaagentes[j].posicao.y, ' ');
+                textbackground(7);
+                textbackground(RED);
+                textcolor(RED);
+                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
+            }
         }
         break;
 
@@ -371,13 +374,13 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
             listaagentes[j].posicao.y-= 1;
             if(listaagentes[j].posicao.y > 1 && testaparedes(listaparedes, &listaagentes[j].posicao.x, &listaagentes[j].posicao.y, num_paredes))
             {
-                    textbackground(7);
-                    putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y+1, ' ');
-                    textbackground(7);
-                    textbackground(RED);
-                    textcolor(RED);
-                    putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
-                }
+                textbackground(7);
+                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y+1, ' ');
+                textbackground(7);
+                textbackground(RED);
+                textcolor(RED);
+                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
+            }
         }
         break;
 
@@ -387,13 +390,13 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
             listaagentes[j].posicao.y+=1;
             if(listaagentes[j].posicao.y <= MAXY-1 && testaparedes(listaparedes, &listaagentes[j].posicao.x, &listaagentes[j].posicao.y, num_paredes))
             {
-                    textbackground(7);
-                    putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y-1, ' ');
-                    textbackground(7);
-                    textbackground(RED);
-                    textcolor(RED);
-                    putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
-                }
+                textbackground(7);
+                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y-1, ' ');
+                textbackground(7);
+                textbackground(RED);
+                textcolor(RED);
+                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
+            }
         }
 
         break;
@@ -473,34 +476,34 @@ int gera_score(clock_t tempo_ini, clock_t tempo_fim)
 {
     return (int) ((tempo_fim - tempo_ini) / CLOCKS_PER_SEC);
 }
-void mensagem_final(JOGADOR Jogador)
+void mensagem_final(JOGADOR *Jogador)
 {
-    if (Jogador.chaves_coletadas == NUM_CHAVES)
+    if (Jogador->chaves_coletadas == NUM_CHAVES)
     {
         clrscr();
         printf("\n\t\t\tVoce ganhou!\n\n");
-        printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.tempo);
+        printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador->tempo);
     }
 
-    if(Jogador.vidas == 0)
+    if(Jogador->vidas == 0)
     {
         clrscr();
         printf("\n\t\t\tVoce perdeu!\n\n");
-        printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador.tempo);
+        printf("\n\t\tTempo de jogo: %d segundos\n",  Jogador->tempo);
     }
 
     Sleep(3000);
 }
-int adiciona_ranking(JOGADOR Jogador)
+int adiciona_ranking(JOGADOR *Jogador)
 {
 
-    if (Jogador.modo_de_jogo)
+    if (Jogador->modo_de_jogo)
     {
-        return(int) ((30000 * 2)/ Jogador.tempo);
+        return (30000 * 2) / Jogador->tempo;
     }
     else
     {
-        return(int) ((30000)/ Jogador.tempo);
+        return (30000)/ Jogador->tempo;
     }
 }
 
@@ -622,81 +625,113 @@ int salva_jogo(JOGO jogo)
     }
 
 }
-int main()
+
+void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], int num_paredes)
 {
     int tecla;
-    int num_paredes = 0;
+    clock_t tempo_ini, tempo_fim;
+
+    Jogador->chaves_coletadas = 0;
+    Jogador->vidas = 3;
+    Jogador->posicao.x = 2 + rand() % (MAXX - 2);
+    Jogador->posicao.y = 2 + rand() % (MAXY - 2);
+
+    tempo_ini = clock();
+
+    desenha_cenario();
+    //desenha_ogro();
+    gera_paredes(num_paredes, listaparedes);
+    desenha_paredes(num_paredes, listaparedes);
+    desenha_jogador(Jogador);
+    desenha_placar(Jogador);
+    desenha_CHAVEs(listachaves);
+    desenha_agente(listaagentes);
+
+    do
+    {
+        testa_CHAVEs(listachaves,Jogador);
+        testa_agentes(listaagentes, Jogador);
+        /*
+        start = (double) clock () / CLOCKS_PER_SEC;
+        if(tempo_ini - start >= 1){
+        movimenta_agentes(listaagentes, listachaves, listaparedes, num_paredes);
+        start = (double) clock () / CLOCKS_PER_SEC;
+        }
+        */
+        if(kbhit())
+        {
+            tecla = getch();
+            movimenta_jogador(Jogador, &tecla, listaparedes, num_paredes);
+        }
+
+    }
+    while(Jogador->chaves_coletadas < NUM_CHAVES && Jogador->vidas > 0);
+
+        tempo_fim = clock();
+        Jogador->tempo = gera_score(tempo_ini, tempo_fim);
+        if (Jogador->vidas > 0)
+        {
+            Jogador->ranking = adiciona_ranking(Jogador);
+            salva_ranking(*Jogador);
+        }
+        mensagem_final(Jogador);
+
+}
+void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], int num_paredes)
+{
+    int opcao;
     int num_partidas = 0;
+    clrscr();
+    printf("\t\t Resgate o Ogro\t\t\n");
+    printf("\t\t Iniciar novo jogo(tecle 1)\t\t\n");
+    printf("\t\t Carregar jogo(tecle 2)\t\t\n");
+    printf("\t\t Ranking(tecle3)\t\t\n");
+    printf("\t\t Sair(tecle 4)\t\t\n");
+    fflush(stdin);
+    scanf("%d", &opcao);
+    switch(opcao)
+    {
+    case 1:
+    do{
+        clrscr();
+        puts("Insira o nome do jogador");
+        fflush(stdin);
+        gets(Jogador->nome_jogador);
+        clrscr();
+        escolher_modo_jogo(&num_paredes, Jogador);
+        inicia_novo_jogo(Jogador, listaagentes, listachaves, listaparedes, num_paredes);
+        num_partidas++;
+    }
+    while(num_partidas < NUM_RANK);
+    break;
+    case 2:
+
+        break;
+
+    case 3:
+    clrscr();
+    exibe_ranking();
+        break;
+
+    case 4:
+        exit(0);
+        break;
+    }
+}
+int main()
+{
+    srand(time(NULL));
+    int num_paredes = 0;
 
     JOGADOR Jogador;
     AGENTE listaagentes[NUM_AGENTES];
     CHAVE listachaves[NUM_CHAVES];
     PAREDE listaparedes[40];
     //JOGO jogo;
-
-    clock_t tempo_ini, tempo_fim;
+    //double start;
+    //double stop = 0;
     //clock_t tempo;
-
-    srand(time(NULL));
-
-    do
-    {
-        Jogador.chaves_coletadas = 0;
-        Jogador.vidas = 3;
-        Jogador.posicao.x = 2 + rand() % (MAXX - 2);
-        Jogador.posicao.y = 2 + rand() % (MAXY - 2);
-
-        clrscr();
-        fflush(stdin);
-        puts("Insira o nome do jogador");
-        gets(Jogador.nome_jogador);
-        clrscr();
-
-        escolher_modo_jogo(&num_paredes, &Jogador);
-        tempo_ini = clock();
-
-        desenha_cenario();
-        //desenha_ogro();
-        gera_paredes(num_paredes, listaparedes);
-        desenha_paredes(num_paredes, listaparedes);
-        desenha_jogador(&Jogador);
-        desenha_placar(&Jogador);
-        desenha_CHAVEs(listachaves);
-        desenha_agente(listaagentes);
-
-        do
-        {
-            testa_CHAVEs(listachaves,&Jogador);
-            testa_agentes(listaagentes, &Jogador);
-            /*
-            tempo = clock();
-            if(tempo - tempo_ini >= 1){
-            movimenta_agentes(listaagentes, listachaves, listaparedes, num_paredes);
-            }
-            tempo = clock();
-            */
-
-            if(kbhit())
-            {
-                tecla = getch();
-                movimenta_jogador(&Jogador, tecla, listaparedes, num_paredes);
-            }
-
-        }
-        while(Jogador.chaves_coletadas < NUM_CHAVES && Jogador.vidas > 0);
-
-        tempo_fim = clock();
-        Jogador.tempo = gera_score(tempo_ini, tempo_fim);
-        if (Jogador.vidas > 0)
-        {
-            Jogador.ranking = adiciona_ranking(Jogador);
-            salva_ranking(Jogador);
-        }
-        num_partidas++;
-        mensagem_final(Jogador);
-    }
-    while(num_partidas < NUM_RANK);
-
+    menu(&Jogador, listaagentes, listachaves, listaparedes, num_paredes);
     clrscr();
     exibe_ranking();
 

@@ -62,6 +62,12 @@ PAREDE;
 
 typedef struct
 {
+    Coordenada posicao;
+}
+OGRO;
+
+typedef struct
+{
     JOGADOR Jogador;
     AGENTE listaagentes[NUM_AGENTES];
     CHAVE listachaves[NUM_CHAVES];
@@ -141,10 +147,19 @@ void desenha_cenario()
         }
     }
 }
-void desenha_ogro()
+void desenha_ogro(OGRO Ogro[])
 {
-    int i=0;
-    for (i=0; i<4; i++)
+    int i,j;
+    for(i=0; i<5; i++)
+    {
+        for(j=0; j<4; j++)
+        {
+            Ogro[i].posicao.x = 19 + j;
+            Ogro[i].posicao.y = 12 + j;
+
+        }
+    }
+      for(i=0; i<5; i++)
     {
         textbackground(BLUE);
         putchxy(MAXX-1-4, MAXY/2+i, ' ');
@@ -154,6 +169,13 @@ void desenha_ogro()
         putchxy(MAXX-1-i, MAXY/2+4, ' ');
         textbackground(BLUE);
         putchxy(MAXX-5, MAXY/2+4, ' ');
+        putchxy(Ogro[i].posicao.x, Ogro[i].posicao.y, ' ');
+        textbackground(BLUE);
+    }
+    for(i=0; i<5; i++)
+    {
+        textbackground(BLUE);
+        putchxy(Ogro[i].posicao.x, Ogro[i].posicao.y, ' ');
         textbackground(BLUE);
     }
     putchxy(MAXX-1-2, (MAXY/2+2), 'O');
@@ -626,7 +648,7 @@ int salva_jogo(JOGO jogo)
 
 }
 
-void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], int num_paredes)
+void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], int num_paredes, OGRO Ogro[])
 {
     int tecla;
     clock_t tempo_ini, tempo_fim;
@@ -639,7 +661,7 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
     tempo_ini = clock();
 
     desenha_cenario();
-    //desenha_ogro();
+    //desenha_ogro(Ogro);
     gera_paredes(num_paredes, listaparedes);
     desenha_paredes(num_paredes, listaparedes);
     desenha_jogador(Jogador);
@@ -667,17 +689,17 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
     }
     while(Jogador->chaves_coletadas < NUM_CHAVES && Jogador->vidas > 0);
 
-        tempo_fim = clock();
-        Jogador->tempo = gera_score(tempo_ini, tempo_fim);
-        if (Jogador->vidas > 0)
-        {
-            Jogador->ranking = adiciona_ranking(Jogador);
-            salva_ranking(*Jogador);
-        }
-        mensagem_final(Jogador);
+    tempo_fim = clock();
+    Jogador->tempo = gera_score(tempo_ini, tempo_fim);
+    if (Jogador->vidas > 0)
+    {
+        Jogador->ranking = adiciona_ranking(Jogador);
+        salva_ranking(*Jogador);
+    }
+    mensagem_final(Jogador);
 
 }
-void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], int num_paredes)
+void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], int num_paredes, OGRO Ogro[])
 {
     int opcao;
     int num_partidas = 0;
@@ -692,25 +714,26 @@ void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE l
     switch(opcao)
     {
     case 1:
-    do{
-        clrscr();
-        puts("Insira o nome do jogador");
-        fflush(stdin);
-        gets(Jogador->nome_jogador);
-        clrscr();
-        escolher_modo_jogo(&num_paredes, Jogador);
-        inicia_novo_jogo(Jogador, listaagentes, listachaves, listaparedes, num_paredes);
-        num_partidas++;
-    }
-    while(num_partidas < NUM_RANK);
-    break;
+        do
+        {
+            clrscr();
+            puts("Insira o nome do jogador");
+            fflush(stdin);
+            gets(Jogador->nome_jogador);
+            clrscr();
+            escolher_modo_jogo(&num_paredes, Jogador);
+            inicia_novo_jogo(Jogador, listaagentes, listachaves, listaparedes, num_paredes, Ogro);
+            num_partidas++;
+        }
+        while(num_partidas < NUM_RANK);
+        break;
     case 2:
 
         break;
 
     case 3:
-    clrscr();
-    exibe_ranking();
+        clrscr();
+        exibe_ranking();
         break;
 
     case 4:
@@ -727,11 +750,13 @@ int main()
     AGENTE listaagentes[NUM_AGENTES];
     CHAVE listachaves[NUM_CHAVES];
     PAREDE listaparedes[40];
+    OGRO Ogro[5];
+
     //JOGO jogo;
     //double start;
     //double stop = 0;
     //clock_t tempo;
-    menu(&Jogador, listaagentes, listachaves, listaparedes, num_paredes);
+    menu(&Jogador, listaagentes, listachaves, listaparedes, num_paredes, Ogro);
     clrscr();
     exibe_ranking();
 

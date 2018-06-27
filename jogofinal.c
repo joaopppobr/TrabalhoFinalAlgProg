@@ -76,12 +76,12 @@ typedef struct
 }
 JOGO;
 
-int testaparedes(PAREDE listaparedes[],int *x,int *y, JOGADOR *Jogador)
+int testaparedes(PAREDE listaparedes[],int x,int y, JOGADOR *Jogador)
 {
     int i;
     for(i=0; i < (Jogador->num_paredes * NUM_SEGMENTOS + NUM_SEGMENTOS); i++)
     {
-        if(listaparedes[i].posicao.x == *x && listaparedes[i].posicao.y == *y)
+        if(listaparedes[i].posicao.x == x && listaparedes[i].posicao.y == y)
         {
             return 0;
         }
@@ -161,7 +161,7 @@ void desenha_ogro(OGRO Ogro[])
 
         }
     }
-      for(i=0; i<5; i++)
+    for(i=0; i<5; i++)
     {
         textbackground(BLUE);
         putchxy(MAXX-1-4, MAXY/2+i, ' ');
@@ -239,90 +239,104 @@ void desenha_paredes(JOGADOR *Jogador, PAREDE listaparedes[])
 }
 
 
-void desenha_jogador(JOGADOR *Jogador)
+void desenha_jogador(int x, int y)
 {
     char jogador = 'P';
 
     textbackground(GREEN);
     textcolor(GREEN);
-    putchxy(Jogador->posicao.x, Jogador->posicao.y, jogador);
+    putchxy(x, y, jogador);
+}
+void desenha_agente(int x, int y)
+{
+    char agente = 'G';
+
+    textbackground(RED);
+    textcolor(RED);
+    putchxy(x, y, agente);
+}
+void apaga_elemento(int x, int y)
+{
+    textbackground(7);
+    putchxy(x, y, ' ');
+}
+void movimenta_coisas(int *x, int *y, int direcao, PAREDE listaparedes[], JOGADOR *Jogador)
+{
+
+    switch(direcao)
+    {
+    case 1: //esquerda
+        if(*x > 1 && testaparedes(listaparedes, *x-1, *y, Jogador))
+        {
+            *x-= 1;
+        }
+        break;
+
+    case 2: //direita
+        if(*x <= MAXX-1 && testaparedes(listaparedes, *x+1, *y, Jogador))
+        {
+            *x+= 1;
+        }
+        break;
+
+    case 3: // cima
+        if(*y > 1 && testaparedes(listaparedes, *x, *y-1, Jogador))
+        {
+            *y-= 1;
+        }
+        break;
+
+    case 4: // baixp
+        if(*y > 1 && testaparedes(listaparedes, *x, *y+1, Jogador))
+        {
+            *y+= 1;
+        }
+        break;
+    }
 }
 void movimenta_jogador(JOGADOR *Jogador, int *ch, PAREDE listaparedes[])
 {
-    char jogador = 'P';
 
 
     switch(*ch)
     {
-    case 75:
-        Jogador->posicao.x -= 1;
-        if(Jogador->posicao.x > 1 && testaparedes(listaparedes, &Jogador->posicao.x, &Jogador->posicao.y, Jogador))
+    case 75: // esquerda
+        if(Jogador->posicao.x > 1 && testaparedes(listaparedes, Jogador->posicao.x-1, Jogador->posicao.y, Jogador))
         {
-            textbackground(7);
-            putchxy(Jogador->posicao.x+1, Jogador->posicao.y, ' ');
-            textbackground(GREEN);
-            textcolor(GREEN);
-            putchxy(Jogador->posicao.x, Jogador->posicao.y, jogador);
-        }
-        else
-        {
-            Jogador->posicao.x += 1;
-        }
-
-        break;
-
-    case 77:
-        Jogador->posicao.x+= 1;
-        if(Jogador->posicao.x <= MAXX-1 && testaparedes(listaparedes, &Jogador->posicao.x, &Jogador->posicao.y, Jogador))
-        {
-            textbackground(7);
-            putchxy(Jogador->posicao.x-1, Jogador->posicao.y, ' ');
-            textbackground(GREEN);
-            textcolor(GREEN);
-            putchxy(Jogador->posicao.x, Jogador->posicao.y, jogador);
-        }
-        else
-        {
-            Jogador->posicao.x -= 1;
+            apaga_elemento(Jogador->posicao.x, Jogador->posicao.y);
+            movimenta_coisas(&Jogador->posicao.x, &Jogador->posicao.y, 1, listaparedes, Jogador);
+            desenha_jogador(Jogador->posicao.x, Jogador->posicao.y);
         }
         break;
 
-    case 72:
-        Jogador->posicao.y-= 1;
-        if(Jogador->posicao.y > 1 && testaparedes(listaparedes, &Jogador->posicao.x, &Jogador->posicao.y, Jogador))
+    case 77: // direita
+        if(Jogador->posicao.x <= MAXX-1 && testaparedes(listaparedes, Jogador->posicao.x+1, Jogador->posicao.y, Jogador))
         {
-            textbackground(7);
-            putchxy(Jogador->posicao.x, Jogador->posicao.y +1, ' ');
-            textbackground(7);
-            textbackground(GREEN);
-            textcolor(GREEN);
-            putchxy(Jogador->posicao.x, Jogador->posicao.y, jogador);
-        }
-        else
-        {
-            Jogador->posicao.y += 1;
+            apaga_elemento(Jogador->posicao.x, Jogador->posicao.y);
+            movimenta_coisas(&Jogador->posicao.x, &Jogador->posicao.y, 2, listaparedes, Jogador);
+            desenha_jogador(Jogador->posicao.x, Jogador->posicao.y);
         }
         break;
 
-    case 80:
-        Jogador->posicao.y+=1;
-        if(Jogador->posicao.y <= MAXY-1 && testaparedes(listaparedes, &Jogador->posicao.x, &Jogador->posicao.y, Jogador))
+    case 72: //cima
+        if(Jogador->posicao.y > 1 && testaparedes(listaparedes, Jogador->posicao.x, Jogador->posicao.y-1, Jogador))
         {
-            textbackground(7);
-            putchxy(Jogador->posicao.x, Jogador->posicao.y -1, ' ');
-            textbackground(GREEN);
-            textcolor(GREEN);
-            putchxy(Jogador->posicao.x, Jogador->posicao.y, jogador);
+            apaga_elemento(Jogador->posicao.x, Jogador->posicao.y);
+            movimenta_coisas(&Jogador->posicao.x, &Jogador->posicao.y, 3, listaparedes, Jogador);
+            desenha_jogador(Jogador->posicao.x, Jogador->posicao.y);
         }
-        else
+        break;
+
+    case 80: // baixo
+        if(Jogador->posicao.y <= MAXY-1 && testaparedes(listaparedes, Jogador->posicao.x, Jogador->posicao.y+1, Jogador))
         {
-            Jogador->posicao.y -= 1;
+            apaga_elemento(Jogador->posicao.x, Jogador->posicao.y);
+            movimenta_coisas(&Jogador->posicao.x, &Jogador->posicao.y, 4, listaparedes, Jogador);
+            desenha_jogador(Jogador->posicao.x, Jogador->posicao.y);
         }
         break;
 
     }
-
-
 }
 void desenha_placar(JOGADOR *Jogador)
 {
@@ -338,7 +352,7 @@ void desenha_placar(JOGADOR *Jogador)
         printf("Nome: %s \t\tCHAVEs coletadas: %d \t\tVidas: %d \nModo de jogo: Facil", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
     }
 }
-void desenha_agente(AGENTE listaagentes[], JOGADOR *Jogador)
+void desenha_agentes(AGENTE listaagentes[], JOGADOR *Jogador)
 {
     int j;
 
@@ -352,10 +366,10 @@ void desenha_agente(AGENTE listaagentes[], JOGADOR *Jogador)
         putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
     }
 }
+
 void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], JOGADOR *Jogador)
 {
     int j=0;
-    srand(time(NULL));
     int direcao = rand() % 3;
 
     switch(direcao)
@@ -363,15 +377,11 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
     case 0:
         for(j=0; j<Jogador->num_agentes; j++)
         {
-            listaagentes[j].posicao.x-= 1;
-            if(listaagentes[j].posicao.x > 1 && testaparedes(listaparedes, &listaagentes[j].posicao.x, &listaagentes[j].posicao.y, Jogador))
+            if(listaagentes[j].posicao.x > 1 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y, Jogador))
             {
-                textbackground(7);
-                putchxy(listaagentes[j].posicao.x+1, listaagentes[j].posicao.y, ' ');
-                textbackground(7);
-                textbackground(RED);
-                textcolor(RED);
-                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
+                apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
+                movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 1, listaparedes, Jogador);
+                desenha_agente(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
             }
         }
         break;
@@ -379,15 +389,11 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
     case 1:
         for(j=0; j<Jogador->num_agentes; j++)
         {
-            listaagentes[j].posicao.x+= 1;
-            if(listaagentes[j].posicao.x<= MAXX-1 && testaparedes(listaparedes, &listaagentes[j].posicao.x, &listaagentes[j].posicao.y, Jogador))
+            if(listaagentes[j].posicao.x<= MAXX-1 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y, Jogador))
             {
-                textbackground(7);
-                putchxy(listaagentes[j].posicao.x-1, listaagentes[j].posicao.y, ' ');
-                textbackground(7);
-                textbackground(RED);
-                textcolor(RED);
-                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
+                apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
+                movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 2, listaparedes, Jogador);
+                desenha_agente(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
             }
         }
         break;
@@ -395,15 +401,11 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
     case 2:
         for(j=0; j<Jogador->num_agentes; j++)
         {
-            listaagentes[j].posicao.y-= 1;
-            if(listaagentes[j].posicao.y > 1 && testaparedes(listaparedes, &listaagentes[j].posicao.x, &listaagentes[j].posicao.y, Jogador))
+            if(listaagentes[j].posicao.y > 1 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y, Jogador))
             {
-                textbackground(7);
-                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y+1, ' ');
-                textbackground(7);
-                textbackground(RED);
-                textcolor(RED);
-                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
+                apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
+                movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 3, listaparedes, Jogador);
+                desenha_agente(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
             }
         }
         break;
@@ -411,15 +413,11 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
     case 3:
         for(j=0; j<Jogador->num_agentes; j++)
         {
-            listaagentes[j].posicao.y+=1;
-            if(listaagentes[j].posicao.y <= MAXY-1 && testaparedes(listaparedes, &listaagentes[j].posicao.x, &listaagentes[j].posicao.y, Jogador))
+            if(listaagentes[j].posicao.y <= MAXY-1 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y, Jogador))
             {
-                textbackground(7);
-                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y-1, ' ');
-                textbackground(7);
-                textbackground(RED);
-                textcolor(RED);
-                putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
+                apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
+                movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 4, listaparedes, Jogador);
+                desenha_agente(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
             }
         }
 
@@ -666,28 +664,33 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
     //desenha_ogro(Ogro);
     gera_paredes(Jogador, listaparedes);
     desenha_paredes(Jogador, listaparedes);
-    desenha_jogador(Jogador);
+    desenha_jogador(Jogador->posicao.x, Jogador->posicao.y);
     desenha_placar(Jogador);
     desenha_CHAVEs(listachaves, Jogador);
-    desenha_agente(listaagentes, Jogador);
+    desenha_agentes(listaagentes, Jogador);
+
+    double comeco_agente, fim_agente;
+
+    comeco_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
+    fim_agente = comeco_agente;
 
     do
     {
         testa_CHAVEs(listachaves,Jogador);
         testa_agentes(listaagentes, Jogador);
-        /*
-        start = (double) clock () / CLOCKS_PER_SEC;
-        if(tempo_ini - start >= 1){
-        movimenta_agentes(listaagentes, listachaves, listaparedes, Jogador->num_paredes);
-        start = (double) clock () / CLOCKS_PER_SEC;
+
+        if(fim_agente - comeco_agente >= 500)
+        {
+            movimenta_agentes(listaagentes, listachaves, listaparedes, Jogador);
+            comeco_agente = fim_agente;
         }
-        */
+
         if(kbhit())
         {
             tecla = getch();
             movimenta_jogador(Jogador, &tecla, listaparedes);
         }
-
+        fim_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
     }
     while(Jogador->chaves_coletadas < Jogador->num_chaves && Jogador->vidas > 0);
 

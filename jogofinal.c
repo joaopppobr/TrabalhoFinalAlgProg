@@ -377,7 +377,7 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
     case 0:
         for(j=0; j<Jogador->num_agentes; j++)
         {
-            if(listaagentes[j].posicao.x > 1 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y, Jogador))
+            if(listaagentes[j].posicao.x > 2 && testaparedes(listaparedes, listaagentes[j].posicao.x-1, listaagentes[j].posicao.y, Jogador))
             {
                 apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
                 movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 1, listaparedes, Jogador);
@@ -389,7 +389,7 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
     case 1:
         for(j=0; j<Jogador->num_agentes; j++)
         {
-            if(listaagentes[j].posicao.x<= MAXX-1 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y, Jogador))
+            if(listaagentes[j].posicao.x<= MAXX-2 && testaparedes(listaparedes, listaagentes[j].posicao.x+1, listaagentes[j].posicao.y, Jogador))
             {
                 apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
                 movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 2, listaparedes, Jogador);
@@ -401,7 +401,7 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
     case 2:
         for(j=0; j<Jogador->num_agentes; j++)
         {
-            if(listaagentes[j].posicao.y > 1 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y, Jogador))
+            if(listaagentes[j].posicao.y > 2 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y-1, Jogador))
             {
                 apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
                 movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 3, listaparedes, Jogador);
@@ -413,7 +413,7 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
     case 3:
         for(j=0; j<Jogador->num_agentes; j++)
         {
-            if(listaagentes[j].posicao.y <= MAXY-1 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y, Jogador))
+            if(listaagentes[j].posicao.y <= MAXY-2 && testaparedes(listaparedes, listaagentes[j].posicao.x, listaagentes[j].posicao.y+1, Jogador))
             {
                 apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y);
                 movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 4, listaparedes, Jogador);

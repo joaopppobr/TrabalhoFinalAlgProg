@@ -12,15 +12,14 @@
 #define _TIME_H
 #include <stddef.h>
 
-#define MAXX 80
-#define MAXY 24
-#define NOME 20
-#define NUM_RANK 2
-#define COORDENADAS 2
-#define NUM_SEGMENTOS 5
-#define AGENTESMAX 50
-#define CHAVESMAX 7
-#define PAREDESMAX 100
+#define MAXX 80 //Limite X do cenário;
+#define MAXY 24 //Limite Y do cenário;
+#define NOME 20 // Tamanho máximo do nome do jogado;
+#define NUM_JOGOS 2 //Número de vezes que o loop de jogos roda;
+#define NUM_SEGMENTOS 5 //Número de segmentos em cada parede do jogo;
+#define AGENTESMAX 20 //Número máximo de agentes permitidos no jogo;
+#define CHAVESMAX 5 //Número máximo de chaves permitidos no jogo;
+#define PAREDESMAX 100 //Tamanho máximo da array listaparedes
 
 
 
@@ -617,7 +616,6 @@ void quick_sort(JOGADOR a[], int left, int right)
             j--;
         }
     }
-
     if(j > left)
     {
         quick_sort(a, left, j);
@@ -747,7 +745,7 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
     comeco_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
     fim_agente = comeco_agente;
 
-    do
+    do //Laço de uma sessão do jogo.
     {
         testa_chaves(listachaves,Jogador);
         testa_agentes(listaagentes, Jogador);
@@ -768,7 +766,7 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
     }
     while(Jogador->chaves_coletadas < Jogador->num_chaves && Jogador->vidas > 0);
 
-    //Após um jogo acabar, ele finaliza o clock e gera o tempo de jogo do jogador
+    //Após uma sessão do jogo acabar, ele finaliza o clock e gera o tempo de jogo do jogador
     tempo_fim = clock();
     Jogador->tempo = gera_tempo_jogo(tempo_ini, tempo_fim);
 
@@ -780,7 +778,6 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
     }
 
     mensagem_final(Jogador);
-
 }
 //Função que mostra o menu inicial do jogo para o usuário.
 void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], OGRO Ogro[])
@@ -798,12 +795,12 @@ void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE l
     switch(opcao)
     {
     case 1: //Inicia um novo jogo.
-        do
+        do //Faz NUM_JOGOS número de sessões do jogo antes de terminar.
         {
             inicia_novo_jogo(Jogador, listaagentes, listachaves, listaparedes, Ogro);
             num_partidas++;
         }
-        while(num_partidas < NUM_RANK);
+        while(num_partidas < NUM_JOGOS);
         clrscr();
         exibe_ranking();
         break;

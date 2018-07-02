@@ -695,14 +695,14 @@ int salva_jogo(JOGO *jogo)
 {
     JOGO buffer;
     FILE *arq;
-    arq = fopen("jogos_salvos.bin","rb+");
+    arq = fopen("jogos_salvos.bin","wb+");
     if(!arq){
       printf("Erro na abertura ou arquivo inexistente");
     }
     else
     {
       while(!feof(arq)){
-        if(!strcmpfread(&buffer.jogador.nome, jogo->jogador.nome)){
+        if(!strcmp(buffer.Jogador.nome_jogador, jogo->Jogador.nome_jogador)){
         fseek(arq,- sizeof(JOGO),SEEK_CUR);
         if(fwrite(jogo,sizeof(JOGO),1,arq)){
           fclose(arq);
@@ -745,6 +745,115 @@ fclose(arq);
 return 1;
 }
 
+//Função que inicia um novo jogo com as configurações carregadas a partir de um jogo anterior
+void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], OGRO Ogro[], JOGO *jogo)
+{
+    int tecla;
+    Jogador->num_chaves = Jogador->num_chaves - Jogador->chaves_coletadas;
+    clock_t tempo_ini, tempo_fim;
+    double comeco_agente, fim_agente;
+
+    tempo_ini = clock(); //Inicia o relógio do jogo.
+
+    clrscr();
+    //Aqui se gera e desenha as estruturas do jogo.
+    desenha_cenario();
+    //desenha_ogro(Ogro);
+    desenha_paredes(Jogador, listaparedes);
+    desenha_jogador(Jogador->posicao.x, Jogador->posicao.y);
+    desenha_placar(Jogador);
+    desenha_CHAVEs(listachaves, Jogador, listaparedes);
+    desenha_agentes(listaagentes, Jogador);
+
+    //Começa o relógio do agente para movimentar de acordo com a velocidade determinada na dificuldade.
+    comeco_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
+    fim_agente = comeco_agente;
+
+    do //Laço de uma sessão do jogo.
+    {
+        testa_chaves(listachaves,Jogador);
+        testa_agentes(listaagentes, Jogador);
+
+        //Movimenta os agentes a cada X tempo, dependendo da velocidade escolhida pelo jogador, em milisegundos
+        if(fim_agente - comeco_agente >= listaagentes->velocidade)
+        {
+            movimenta_agentes(listaagentes, listachaves, listaparedes, Jogador);
+            comeco_agente = fim_agente;
+        }
+        //Aqui o programa recebe a tecla inserida pelo jogador e executa funções de acordo.
+        if(kbhit())
+        {
+            tecla = getch();
+            if (tecla == 27){
+                clrscr();
+                salva_jogo(jogo);
+                menu_pausa(jogo);
+            }
+            movimenta_jogador(Jogador, &tecla, listaparedes);
+        }
+        fim_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
+    }
+    while(Jogador->chaves_coletadas < Jogador->num_chaves && Jogador->vidas > 0);
+
+    //Após uma sessão do jogo acabar, ele finaliza o clock e gera o tempo de jogo do jogador
+    tempo_fim = clock();
+    Jogador->tempo = gera_tempo_jogo(tempo_ini, tempo_fim);
+
+    //Se o jogador ganhou o jogo, ele salva o ranking.
+    if (Jogador->vidas > 0)
+    {
+        Jogador->ranking = adiciona_ranking(Jogador);
+        salva_ranking(*Jogador);
+    }
+
+    mensagem_final(Jogador);
+}
+
+void menu_pausa(JOGO *jogo){
+    int num_partidas = 0;
+  int opcao;
+  int tecla;
+  clrscr();
+    system("COLOR 70");
+  printf("\t\t Pausa\t\t\n");
+  printf("\t\t Voltar ao jogo(tecle 1)\t\t\n");
+  printf("\t\t Ajuda(tecle 2)\t\t\n");
+  printf("\t\t Sair do jogo(tecle3)\t\t\n");
+  fflush(stdin);
+  scanf("%d", &opcao);
+  switch(opcao)
+  {
+  case 1: //Volta ao jogo
+      carrega_jogo(jogo, jogo->Jogador.nome_jogador);
+      do //Faz NUM_JOGOS número de sessões do jogo antes de terminar.
+      {
+          inicia_jogo_carregado(&jogo->Jogador, jogo->listaagentes, jogo->listachaves, jogo->listaparedes, jogo->Ogro, jogo);
+          num_partidas++;
+      }
+      while(num_partidas < NUM_JOGOS);
+      clrscr();
+      exibe_ranking();
+      break;
+  case 2://Abre o menu de ajuda do jogo
+  clrscr();
+  printf("\t\t Jogo do resgate ao Ogro\t\t\n");
+  printf("\t\t Movimente o jogador com as setas do teclado\t\t\n");
+  printf("\t\t Colete as chaves em menor tempo para vencer\t\t\n");
+  printf("\t\t Nao seja atacado por guardas\t\t\n");
+  printf("\t\t Pressione 'Esc' para pausar e salvar o jogo\t\t\n");
+  printf("\t\t Para voltar tecle 'Esc'\t\t\n");
+  tecla = getch();
+  if(tecla == 27){
+    menu_pausa(jogo);
+  }
+      break;
+
+  case 3://Sai do jogo
+      clrscr();
+      exit(0);
+      break;
+  }
+}
 //Função que inicia um novo jogo.
 void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], OGRO Ogro[], JOGO *jogo)
 {
@@ -798,67 +907,6 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
         {
             tecla = getch();
             if (tecla == 27){
-                salva_jogo(jogo);
-            }
-            movimenta_jogador(Jogador, &tecla, listaparedes);
-        }
-        fim_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
-    }
-    while(Jogador->chaves_coletadas < Jogador->num_chaves && Jogador->vidas > 0);
-
-    //Após uma sessão do jogo acabar, ele finaliza o clock e gera o tempo de jogo do jogador
-    tempo_fim = clock();
-    Jogador->tempo = gera_tempo_jogo(tempo_ini, tempo_fim);
-
-    //Se o jogador ganhou o jogo, ele salva o ranking.
-    if (Jogador->vidas > 0)
-    {
-        Jogador->ranking = adiciona_ranking(Jogador);
-        salva_ranking(*Jogador);
-    }
-
-    mensagem_final(Jogador);
-}
-//Função que inicia um novo jogo com as configurações carregadas a partir de um jogo anterior
-void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], OGRO Ogro[], JOGO *jogo)
-{
-    int tecla;
-    clock_t tempo_ini, tempo_fim;
-    double comeco_agente, fim_agente;
-
-    tempo_ini = clock(); //Inicia o relógio do jogo.
-
-    clrscr();
-    //Aqui se gera e desenha as estruturas do jogo.
-    desenha_cenario();
-    //desenha_ogro(Ogro);
-    gera_paredes(Jogador, listaparedes);
-    desenha_paredes(Jogador, listaparedes);
-    desenha_jogador(Jogador->posicao.x, Jogador->posicao.y);
-    desenha_placar(Jogador);
-    desenha_CHAVEs(listachaves, Jogador, listaparedes);
-    desenha_agentes(listaagentes, Jogador);
-
-    //Começa o relógio do agente para movimentar de acordo com a velocidade determinada na dificuldade.
-    comeco_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
-    fim_agente = comeco_agente;
-
-    do //Laço de uma sessão do jogo.
-    {
-        testa_chaves(listachaves,Jogador);
-        testa_agentes(listaagentes, Jogador);
-
-        //Movimenta os agentes a cada X tempo, dependendo da velocidade escolhida pelo jogador, em milisegundos
-        if(fim_agente - comeco_agente >= listaagentes->velocidade)
-        {
-            movimenta_agentes(listaagentes, listachaves, listaparedes, Jogador);
-            comeco_agente = fim_agente;
-        }
-        //Aqui o programa recebe a tecla inserida pelo jogador e executa funções de acordo.
-        if(kbhit())
-        {
-            tecla = getch();
-            if (tecla == 27){
                 clrscr();
                 salva_jogo(jogo);
                 menu_pausa(jogo);
@@ -881,49 +929,6 @@ void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listac
     }
 
     mensagem_final(Jogador);
-}
-void menu_pausa(JOGO *jogo){
-  int opcao;
-  int tecla;
-  clrscr();
-  printf("\t\t Pausa\t\t\n");
-  printf("\t\t Voltar ao jogo(tecle 1)\t\t\n");
-  printf("\t\t Ajuda(tecle 2)\t\t\n");
-  printf("\t\t Sair do jogo(tecle3)\t\t\n");
-  fflush(stdin);
-  scanf("%d", &opcao);
-  switch(opcao)
-  {
-  case 1: //Volta ao jogo
-      carrega_jogo(jogo, jogo->Jogador.nome_jogador);
-      do //Faz NUM_JOGOS número de sessões do jogo antes de terminar.
-      {
-          inicia_novo_jogo(&jogo->Jogador, jogo->listaagentes, jogo->listachaves, jogo->listaparedes, jogo->Ogro, jogo);
-          num_partidas++;
-      }
-      while(num_partidas < NUM_JOGOS);
-      clrscr();
-      exibe_ranking();
-      break;
-  case 2://Abre o menu de ajuda do jogo
-  clrscr();
-  printf("\t\t Jogo do resgate ao Ogro\t\t\n");
-  printf("\t\t Movimente o jogador com as setas do teclado\t\t\n");
-  printf("\t\t Colete as chaves em menor tempo para vencer\t\t\n");
-  printf("\t\t Nao seja atacado por guardas\t\t\n");
-  printf("\t\t Pressione 'Esc' para pausar e salvar o jogo\t\t\n");
-  printf("\t\t Para voltar tecle 'Esc'\t\t\n");
-  tecla = getch();
-  if(tecla == 27){
-    menu_pausa(jogo);
-  }
-      break;
-
-  case 3://Sai do jogo
-      clrscr();
-      exit();
-      break;
-  }
 }
 //Função que mostra o menu inicial do jogo para o usuário.
 void menu(JOGO *jogo)

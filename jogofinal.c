@@ -9,9 +9,9 @@
 #include <unistd.h>
 #include <dos.h>
 #include <math.h>
-#define _TIME_H
 #include <stddef.h>
 
+#define _TIME_H
 #define MAXX 80 //Limite X do cenário;
 #define MAXY 24 //Limite Y do cenário;
 #define NOME 20 // Tamanho máximo do nome do jogado;
@@ -211,7 +211,6 @@ void desenha_ogro(OGRO Ogro[])
 //Função que gera a posição das paredes no jogo de forma randomica.
 void gera_paredes(JOGADOR *Jogador, PAREDE listaparedes[])
 {
-    srand(time(NULL));
     int i, j;
     int direcao = 0;
     int dirx, diry;
@@ -471,7 +470,6 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
 //Função que gera e desenha as chaves em posições aleatórias do cenário.
 void desenha_CHAVEs(CHAVE listachaves[], JOGADOR *Jogador, PAREDE listaparedes[])
 {
-    srand(time(NULL));
     int j;
 
     for(j=0; j<Jogador->num_chaves; j++)
@@ -697,19 +695,30 @@ int salva_jogo(JOGO *jogo)
 {
     JOGO buffer;
     FILE *arq;
-    if(!(arq = fopen("jogos_salvos.bin","wb")))
-    {
-        printf("Erro ao abrir o arquivo");
-        return(0);
+    arq = fopen("jogos_salvos.bin","rb+");
+    if(!arq){
+      printf("Erro na abertura ou arquivo inexistente");
     }
     else
     {
-        fwrite(jogo,sizeof(JOGO),1,arq);
+      while(!feof(arq)){
+        if(!strcmpfread(&buffer.jogador.nome, jogo->jogador.nome)){
+        fseek(arq,- sizeof(JOGO),SEEK_CUR);
+        if(fwrite(jogo,sizeof(JOGO),1,arq)){
+          fclose(arq);
+          return 1;
+        }
+      }
+      if(fwrite(jogo,sizeof(JOGO),1,arq)){
         fclose(arq);
-        return(1);
+        return 1;
+      }
+      }
     }
-
+    fclose(arq);
+    return 0;
 }
+//Função que carrega um jogo de um arquivo binário a partir de um nome dado
 int carrega_jogo(JOGO *jogo, char nome_procurado[]){
 FILE *arq;
 JOGO buffer;
@@ -810,9 +819,9 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
 
     mensagem_final(Jogador);
 }
+//Função que inicia um novo jogo com as configurações carregadas a partir de um jogo anterior
 void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], OGRO Ogro[], JOGO *jogo)
 {
-    //Dá valor às variáveis iniciais do jogo
     int tecla;
     clock_t tempo_ini, tempo_fim;
     double comeco_agente, fim_agente;
@@ -850,7 +859,9 @@ void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listac
         {
             tecla = getch();
             if (tecla == 27){
+                clrscr();
                 salva_jogo(jogo);
+                menu_pausa(jogo);
             }
             movimenta_jogador(Jogador, &tecla, listaparedes);
         }
@@ -870,6 +881,49 @@ void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listac
     }
 
     mensagem_final(Jogador);
+}
+void menu_pausa(JOGO *jogo){
+  int opcao;
+  int tecla;
+  clrscr();
+  printf("\t\t Pausa\t\t\n");
+  printf("\t\t Voltar ao jogo(tecle 1)\t\t\n");
+  printf("\t\t Ajuda(tecle 2)\t\t\n");
+  printf("\t\t Sair do jogo(tecle3)\t\t\n");
+  fflush(stdin);
+  scanf("%d", &opcao);
+  switch(opcao)
+  {
+  case 1: //Volta ao jogo
+      carrega_jogo(jogo, jogo->Jogador.nome_jogador);
+      do //Faz NUM_JOGOS número de sessões do jogo antes de terminar.
+      {
+          inicia_novo_jogo(&jogo->Jogador, jogo->listaagentes, jogo->listachaves, jogo->listaparedes, jogo->Ogro, jogo);
+          num_partidas++;
+      }
+      while(num_partidas < NUM_JOGOS);
+      clrscr();
+      exibe_ranking();
+      break;
+  case 2://Abre o menu de ajuda do jogo
+  clrscr();
+  printf("\t\t Jogo do resgate ao Ogro\t\t\n");
+  printf("\t\t Movimente o jogador com as setas do teclado\t\t\n");
+  printf("\t\t Colete as chaves em menor tempo para vencer\t\t\n");
+  printf("\t\t Nao seja atacado por guardas\t\t\n");
+  printf("\t\t Pressione 'Esc' para pausar e salvar o jogo\t\t\n");
+  printf("\t\t Para voltar tecle 'Esc'\t\t\n");
+  tecla = getch();
+  if(tecla == 27){
+    menu_pausa(jogo);
+  }
+      break;
+
+  case 3://Sai do jogo
+      clrscr();
+      exit();
+      break;
+  }
 }
 //Função que mostra o menu inicial do jogo para o usuário.
 void menu(JOGO *jogo)
@@ -906,7 +960,14 @@ void menu(JOGO *jogo)
                 printf("Não achamos esse nome");
             }
             else{
+              do //Faz NUM_JOGOS número de sessões do jogo antes de terminar.
+              {
             inicia_jogo_carregado(&jogo->Jogador, jogo->listaagentes, jogo->listachaves, jogo->listaparedes, jogo->Ogro, jogo);
+            num_partidas++;
+          }
+          while(num_partidas < NUM_JOGOS);
+          clrscr();
+          exibe_ranking();
             }
         break;
 
@@ -920,6 +981,7 @@ void menu(JOGO *jogo)
         break;
     }
 }
+
 //Laço principal do programa.
 int main()
 {

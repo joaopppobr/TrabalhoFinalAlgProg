@@ -1,4 +1,4 @@
-//Trabalho final da disciplina de Algoritmos e ProgramaÁao (INF01202) 2018/1
+//Trabalho final da disciplina de Algoritmos e Programa√ßao (INF01202) 2018/1
 //Por Joao Pedro Porto Pires de Oliveira e Theo Santiago Muller
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,14 +12,14 @@
 #define _TIME_H
 #include <stddef.h>
 
-#define MAXX 80 //Limite X do cen·rio;
-#define MAXY 24 //Limite Y do cen·rio;
-#define NOME 20 // Tamanho m·ximo do nome do jogado;
-#define NUM_JOGOS 2 //N˙mero de vezes que o loop de jogos roda;
-#define NUM_SEGMENTOS 5 //N˙mero de segmentos em cada parede do jogo;
-#define AGENTESMAX 20 //N˙mero m·ximo de agentes permitidos no jogo;
-#define CHAVESMAX 5 //N˙mero m·ximo de chaves permitidos no jogo;
-#define PAREDESMAX 100 //Tamanho m·ximo da array listaparedes
+#define MAXX 80 //Limite X do cen√°rio;
+#define MAXY 24 //Limite Y do cen√°rio;
+#define NOME 20 // Tamanho m√°ximo do nome do jogado;
+#define NUM_JOGOS 2 //N√∫mero de vezes que o loop de jogos roda;
+#define NUM_SEGMENTOS 5 //N√∫mero de segmentos em cada parede do jogo;
+#define AGENTESMAX 20 //N√∫mero m√°ximo de agentes permitidos no jogo;
+#define CHAVESMAX 5 //N√∫mero m√°ximo de chaves permitidos no jogo;
+#define PAREDESMAX 100 //Tamanho m√°ximo da array listaparedes
 
 
 
@@ -28,11 +28,11 @@ typedef struct
     int x;
     int y;
 }
-Coordenada; //Estrutura que È chamada por outras estruturas para indicar a posicao do elemento representado na tela.
+Coordenada; //Estrutura que √© chamada por outras estruturas para indicar a posicao do elemento representado na tela.
 
 typedef struct
 {
-    //As informaÁıes abaixo variam de acordo com o modo de jogo escolhido
+    //As informa√ß√µes abaixo variam de acordo com o modo de jogo escolhido
     int num_chaves;
     int num_agentes;
     int num_paredes;
@@ -75,14 +75,15 @@ OGRO; //Estrutura que carrega as informacoes sobre o ogro.
 typedef struct
 {
     JOGADOR Jogador;
-    AGENTE listaagentes;
-    CHAVE listachaves;
-    PAREDE listaparedes;
+    AGENTE listaagentes[AGENTESMAX];
+    CHAVE listachaves[CHAVESMAX];
+    PAREDE listaparedes[PAREDESMAX];
+    OGRO Ogro[5];
 }
-JOGO; //Estrutura que carrega todas as estruturas necess·rias para iniciar um novo jogo
+JOGO; //Estrutura que carrega todas as estruturas necess√°rias para iniciar um novo jogo
 
 
-//FunÁ„o utilizada para testar se a posiÁ„o dos elementos do cen·rio s„o iguais as do elemento da parede. Caso for, retorna 0. Caso n„o, retorna 1.
+//Fun√ß√£o utilizada para testar se a posi√ß√£o dos elementos do cen√°rio s√£o iguais as do elemento da parede. Caso for, retorna 0. Caso n√£o, retorna 1.
 int testaparedes(PAREDE listaparedes[],int x,int y, JOGADOR *Jogador)
 {
     int i;
@@ -95,35 +96,35 @@ int testaparedes(PAREDE listaparedes[],int x,int y, JOGADOR *Jogador)
     }
     return 1;
 }
-//FunÁ„o que modifica as vari·veis de jogo dependendo da escolha do modo de jogo.
+//Fun√ß√£o que modifica as vari√°veis de jogo dependendo da escolha do modo de jogo.
 void escolher_modo_jogo(JOGADOR *Jogador, AGENTE *listaagentes)
 {
     printf("Escolha o modo de jogo:\n");
     printf("0: facil ; 1: dificil ; 2: muito dificil ; 3: impossivel\n");
     scanf("%d", &Jogador->modo_de_jogo);
 
-    if (Jogador->modo_de_jogo == 0) //F·cil
+    if (Jogador->modo_de_jogo == 0) //F√°cil
     {
         Jogador->num_chaves = 5;
         Jogador->num_agentes = 4;
         Jogador->num_paredes = 5;
         listaagentes->velocidade = 500;
     }
-    if (Jogador->modo_de_jogo == 1) //DifÌcil
+    if (Jogador->modo_de_jogo == 1) //Dif√≠cil
     {
         Jogador->num_paredes = 7;
         Jogador->num_chaves = 3;
         Jogador->num_agentes = 6;
         listaagentes->velocidade = 200;
     }
-    if (Jogador->modo_de_jogo == 2) //Muito DifÌcil
+    if (Jogador->modo_de_jogo == 2) //Muito Dif√≠cil
     {
         Jogador->num_chaves = 5;
         Jogador->num_agentes = 8;
         Jogador->num_paredes = 7;
         listaagentes->velocidade = 200;
     }
-    if (Jogador->modo_de_jogo == 3) //ImpossÌvel
+    if (Jogador->modo_de_jogo == 3) //Imposs√≠vel
     {
         Jogador->num_chaves = 7;
         Jogador->num_agentes = 20;
@@ -132,7 +133,7 @@ void escolher_modo_jogo(JOGADOR *Jogador, AGENTE *listaagentes)
     }
 }
 
-//FunÁ„o que desenha o cen·rio do jogo;
+//Fun√ß√£o que desenha o cen√°rio do jogo;
 void desenha_cenario()
 {
     int i=0;
@@ -207,7 +208,7 @@ void desenha_ogro(OGRO Ogro[])
     putchxy(MAXX-1-2, (MAXY/2+2), 'O');
     textbackground(YELLOW);
 }
-//FunÁ„o que gera a posiÁ„o das paredes no jogo de forma randomica.
+//Fun√ß√£o que gera a posi√ß√£o das paredes no jogo de forma randomica.
 void gera_paredes(JOGADOR *Jogador, PAREDE listaparedes[])
 {
     srand(time(NULL));
@@ -251,7 +252,7 @@ void gera_paredes(JOGADOR *Jogador, PAREDE listaparedes[])
         }
     }
 }
-//FunÁ„o que dada a posiÁ„o das paredes gerada na gera_paredes desenha elas no cen·rio.
+//Fun√ß√£o que dada a posi√ß√£o das paredes gerada na gera_paredes desenha elas no cen√°rio.
 void desenha_paredes(JOGADOR *Jogador, PAREDE listaparedes[])
 {
     int i;
@@ -262,7 +263,7 @@ void desenha_paredes(JOGADOR *Jogador, PAREDE listaparedes[])
         textbackground(BLUE);
     }
 }
-//FunÁ„o que dada uma posiÁ„o, desenha o jogador no cen·rio.
+//Fun√ß√£o que dada uma posi√ß√£o, desenha o jogador no cen√°rio.
 void desenha_jogador(int x, int y)
 {
     char jogador = 'P';
@@ -271,7 +272,7 @@ void desenha_jogador(int x, int y)
     textcolor(GREEN);
     putchxy(x, y, jogador);
 }
-//FunÁ„o que dada uma posiÁ„o, desenha o agente no cen·rio.
+//Fun√ß√£o que dada uma posi√ß√£o, desenha o agente no cen√°rio.
 void desenha_agente(int x, int y)
 {
     char agente = 'G';
@@ -280,20 +281,20 @@ void desenha_agente(int x, int y)
     textcolor(RED);
     putchxy(x, y, agente);
 }
-//FunÁ„o que dada uma posiÁ„o, apaga o elemento que est· nessa posiÁ„o no cen·rio
+//Fun√ß√£o que dada uma posi√ß√£o, apaga o elemento que est√° nessa posi√ß√£o no cen√°rio
 void apaga_elemento(int x, int y)
 {
     textbackground(7);
     putchxy(x, y, ' ');
 }
-//FunÁ„o que dada uma posiÁ„o inicial e uma direÁ„o, movimenta o elemento uma casa na direÁ„o indicada.
+//Fun√ß√£o que dada uma posi√ß√£o inicial e uma dire√ß√£o, movimenta o elemento uma casa na dire√ß√£o indicada.
 void movimenta_coisas(int *x, int *y, int direcao, PAREDE listaparedes[], JOGADOR *Jogador)
 {
 
     switch(direcao)
     {
     case 1: //esquerda
-        if(*x > 1 && testaparedes(listaparedes, *x-1, *y, Jogador)) //Testa as paredes para todas para garantir que o movimento n„o invade o espaÁo delas.
+        if(*x > 1 && testaparedes(listaparedes, *x-1, *y, Jogador)) //Testa as paredes para todas para garantir que o movimento n√£o invade o espa√ßo delas.
         {
             *x-= 1;
         }
@@ -321,7 +322,7 @@ void movimenta_coisas(int *x, int *y, int direcao, PAREDE listaparedes[], JOGADO
         break;
     }
 }
-//FunÁ„o que dada a tecla digitada pelo jogador, movimenta o personagem na direÁ„o indicada
+//Fun√ß√£o que dada a tecla digitada pelo jogador, movimenta o personagem na dire√ß√£o indicada
 void movimenta_jogador(JOGADOR *Jogador, int *ch, PAREDE listaparedes[])
 {
 
@@ -331,9 +332,9 @@ void movimenta_jogador(JOGADOR *Jogador, int *ch, PAREDE listaparedes[])
     case 75: //esquerda
         if(Jogador->posicao.x > 2 && testaparedes(listaparedes, Jogador->posicao.x-1, Jogador->posicao.y, Jogador))
         {
-            apaga_elemento(Jogador->posicao.x, Jogador->posicao.y); //Primeiro apaga a posiÁ„o anterior
-            movimenta_coisas(&Jogador->posicao.x, &Jogador->posicao.y, 1, listaparedes, Jogador); //Depois gera a nova posiÁ„o
-            desenha_jogador(Jogador->posicao.x, Jogador->posicao.y); //E finalmente desenha o jogador na nova posiÁ„o.
+            apaga_elemento(Jogador->posicao.x, Jogador->posicao.y); //Primeiro apaga a posi√ß√£o anterior
+            movimenta_coisas(&Jogador->posicao.x, &Jogador->posicao.y, 1, listaparedes, Jogador); //Depois gera a nova posi√ß√£o
+            desenha_jogador(Jogador->posicao.x, Jogador->posicao.y); //E finalmente desenha o jogador na nova posi√ß√£o.
         }
         break;
 
@@ -366,7 +367,7 @@ void movimenta_jogador(JOGADOR *Jogador, int *ch, PAREDE listaparedes[])
 
     }
 }
-//FunÁ„o que desenha o placar com as informaÁıes sobre o jogo
+//Fun√ß√£o que desenha o placar com as informa√ß√µes sobre o jogo
 void desenha_placar(JOGADOR *Jogador)
 {
     textbackground(7);
@@ -374,21 +375,21 @@ void desenha_placar(JOGADOR *Jogador)
     gotoxy(3, MAXY+1);
     switch(Jogador->modo_de_jogo)
     {
-    case 0: //F·cil
+    case 0: //F√°cil
         printf("Nome: %s \t\tCHAVEs coletadas: %d \t\tVidas: %d \nModo de jogo: Facil", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
         break;
-    case 1: //DifÌcil
+    case 1: //Dif√≠cil
         printf("Nome: %s \t\tCHAVEs coletadas: %d \t\tVidas: %d \nModo de jogo: Dificil", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
         break;
-    case 2: //Muito DifÌcil
-        printf("Nome: %s \t\tCHAVEs coletadas: %d \t\tVidas: %d \nModo de jogo: Muito DifÌcil", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
+    case 2: //Muito Dif√≠cil
+        printf("Nome: %s \t\tCHAVEs coletadas: %d \t\tVidas: %d \nModo de jogo: Muito Dif√≠cil", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
         break;
-    case 3: //ImpossÌvel
+    case 3: //Imposs√≠vel
         printf("Nome: %s \t\tCHAVEs coletadas: %d \t\tVidas: %d \nModo de jogo: Impossivel", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
         break;
     }
 }
-//FunÁ„o que gera e desenha os agentes em sua posiÁ„o inicial no jogo.
+//Fun√ß√£o que gera e desenha os agentes em sua posi√ß√£o inicial no jogo.
 void desenha_agentes(AGENTE listaagentes[], JOGADOR *Jogador)
 {
     int j;
@@ -403,8 +404,8 @@ void desenha_agentes(AGENTE listaagentes[], JOGADOR *Jogador)
         putchxy(listaagentes[j].posicao.x, listaagentes[j].posicao.y, ' ');
     }
 }
-/*FunÁ„o que testa as chaves para os agentes, e retorna 0 caso a posiÁ„o das chaves for igual a dos agentes.
-Usada para n„o movimentar os agentes em direÁ„o as chaves.*/
+/*Fun√ß√£o que testa as chaves para os agentes, e retorna 0 caso a posi√ß√£o das chaves for igual a dos agentes.
+Usada para n√£o movimentar os agentes em dire√ß√£o as chaves.*/
 int testa_chaves_agentes(CHAVE listachaves[], int x, int y, JOGADOR *Jogador)
 {
     int i=0;
@@ -419,7 +420,7 @@ int testa_chaves_agentes(CHAVE listachaves[], int x, int y, JOGADOR *Jogador)
     }
     return 1;
 }
-//FunÁ„o que movimenta os agentes no jogo de forma randomica e individual, com os devidos testes para garantir que posiÁ„o em que ele se move È permitida.
+//Fun√ß√£o que movimenta os agentes no jogo de forma randomica e individual, com os devidos testes para garantir que posi√ß√£o em que ele se move √© permitida.
 void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], JOGADOR *Jogador)
 {
     int j=0;
@@ -432,9 +433,9 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
         case 1: //Esquerda
             if(listaagentes[j].posicao.x > 2 && testaparedes(listaparedes, listaagentes[j].posicao.x-1, listaagentes[j].posicao.y, Jogador) && testa_chaves_agentes(listachaves, listaagentes[j].posicao.x-1, listaagentes[j].posicao.y, Jogador))
             {
-                apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y); //Apaga o elemento de sua posiÁ„o anterior
-                movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 1, listaparedes, Jogador); //Muda sua coordenada para a nova posiÁ„o.
-                desenha_agente(listaagentes[j].posicao.x, listaagentes[j].posicao.y);//Dsenha o agente em sua nova posiÁ„o.
+                apaga_elemento(listaagentes[j].posicao.x, listaagentes[j].posicao.y); //Apaga o elemento de sua posi√ß√£o anterior
+                movimenta_coisas(&listaagentes[j].posicao.x, &listaagentes[j].posicao.y, 1, listaparedes, Jogador); //Muda sua coordenada para a nova posi√ß√£o.
+                desenha_agente(listaagentes[j].posicao.x, listaagentes[j].posicao.y);//Dsenha o agente em sua nova posi√ß√£o.
             }
             break;
 
@@ -467,7 +468,7 @@ void movimenta_agentes(AGENTE listaagentes[], CHAVE listachaves[], PAREDE listap
         }
     }
 }
-//FunÁ„o que gera e desenha as chaves em posiÁıes aleatÛrias do cen·rio.
+//Fun√ß√£o que gera e desenha as chaves em posi√ß√µes aleat√≥rias do cen√°rio.
 void desenha_CHAVEs(CHAVE listachaves[], JOGADOR *Jogador, PAREDE listaparedes[])
 {
     srand(time(NULL));
@@ -479,7 +480,7 @@ void desenha_CHAVEs(CHAVE listachaves[], JOGADOR *Jogador, PAREDE listaparedes[]
         listachaves[j].posicao.x = rand() % (MAXX - 3) + 1;
         listachaves[j].posicao.y = rand() % (MAXY - 4) + 2;
 
-        if(testaparedes(listaparedes, listachaves[j].posicao.x, listachaves[j].posicao.y, Jogador)) //Testa as paredes para n„o gerar chaves que n„o sejam coletaveis
+        if(testaparedes(listaparedes, listachaves[j].posicao.x, listachaves[j].posicao.y, Jogador)) //Testa as paredes para n√£o gerar chaves que n√£o sejam coletaveis
         {
             textbackground(YELLOW);
             textcolor(YELLOW);
@@ -487,8 +488,8 @@ void desenha_CHAVEs(CHAVE listachaves[], JOGADOR *Jogador, PAREDE listaparedes[]
         }
     }
 }
-/*FunÁ„o que testa se a posiÁ„o do jogador e do agente s„o iguais.
-Se a posiÁ„o for igual, ele movimenta o jogador para longe e decrescenta a vida do jogador*/
+/*Fun√ß√£o que testa se a posi√ß√£o do jogador e do agente s√£o iguais.
+Se a posi√ß√£o for igual, ele movimenta o jogador para longe e decrescenta a vida do jogador*/
 void testa_agentes(AGENTE listaagentes[], JOGADOR *Jogador)
 {
     int i=0;
@@ -525,8 +526,8 @@ void testa_agentes(AGENTE listaagentes[], JOGADOR *Jogador)
         }
     }
 }
-/*FunÁ„o que testa se a posiÁ„o das chaves È igual a posiÁ„o do jogador.
-Se a posiÁ„o for igual, adiciona uma chave para o contador de chaves do jogador*/
+/*Fun√ß√£o que testa se a posi√ß√£o das chaves √© igual a posi√ß√£o do jogador.
+Se a posi√ß√£o for igual, adiciona uma chave para o contador de chaves do jogador*/
 void testa_chaves(CHAVE listachaves[], JOGADOR *Jogador)
 {
     int i=0;
@@ -544,12 +545,12 @@ void testa_chaves(CHAVE listachaves[], JOGADOR *Jogador)
         }
     }
 }
-//FunÁ„o que gera o tempo de jogo do jogador baseado no tempo inicial e final do loop.
+//Fun√ß√£o que gera o tempo de jogo do jogador baseado no tempo inicial e final do loop.
 int gera_tempo_jogo(clock_t tempo_ini, clock_t tempo_fim)
 {
     return (int) ((tempo_fim - tempo_ini) / CLOCKS_PER_SEC);
 }
-//FunÁ„o que desenha na tela a mensagem final de vitÛria ou derrota ao jogador apÛs o jogo.
+//Fun√ß√£o que desenha na tela a mensagem final de vit√≥ria ou derrota ao jogador ap√≥s o jogo.
 void mensagem_final(JOGADOR *Jogador)
 {
     if (Jogador->chaves_coletadas == Jogador->num_chaves)
@@ -568,27 +569,27 @@ void mensagem_final(JOGADOR *Jogador)
 
     Sleep(3000);
 }
-//FunÁ„o que gera o ranking no jogador dependo do modo de jogo escolhido por ele.
+//Fun√ß√£o que gera o ranking no jogador dependo do modo de jogo escolhido por ele.
 int adiciona_ranking(JOGADOR *Jogador)
 {
     switch(Jogador->modo_de_jogo)
     {
-    case 0: //F·cil. N„o possui multiplicador.
+    case 0: //F√°cil. N√£o possui multiplicador.
         return (30000)/ Jogador->tempo;
         break;
-    case 1: //DifÌcil. Possui x2 de multiplicador.
+    case 1: //Dif√≠cil. Possui x2 de multiplicador.
         return (30000*2) / Jogador->tempo;
         break;
-    case 2: //Muito DifÌcil. Possui x3 de multiplicador.
+    case 2: //Muito Dif√≠cil. Possui x3 de multiplicador.
         return (30000*3)/ Jogador->tempo;
         break;
-    case 3: //ImpossÌvel. Possui x4 de multiplicador.
+    case 3: //Imposs√≠vel. Possui x4 de multiplicador.
         return (30000*4)/ Jogador->tempo;
         break;
     }
     return 0;
 }
-//Algoritmo de Quicksort que È utilizado para ordenar os rankings dos jogadores no arquivo de ranking.
+//Algoritmo de Quicksort que √© utilizado para ordenar os rankings dos jogadores no arquivo de ranking.
 void quick_sort(JOGADOR a[], int left, int right)
 {
     int i, j, x, y;
@@ -625,7 +626,7 @@ void quick_sort(JOGADOR a[], int left, int right)
         quick_sort(a, i, right);
     }
 }
-//FunÁ„o que salva o ranking do jogador em um arquivo de texto de no m·ximo 10 linhas.
+//Fun√ß√£o que salva o ranking do jogador em um arquivo de texto de no m√°ximo 10 linhas.
 int salva_ranking(JOGADOR Jogador)
 {
     FILE *arq;
@@ -653,14 +654,14 @@ int salva_ranking(JOGADOR Jogador)
     buffer[cont] = Jogador;
     quick_sort(buffer, 0, cont+1);
     fclose(arq);
-    arq = fopen("ranking.csv", "a+");
+    arq = fopen("ranking.csv", "w");
     int j;
     for(j = 0; j < cont+1 && j < 10; j++)
         fprintf(arq, "%s;%d\n", buffer[j].nome_jogador, buffer[j].ranking);
     fclose(arq);
     return 1 ;
 }
-//FunÁ„o que exibe o ranking de todos os jogadores na tela a partir do arquivo de ranking.
+//Fun√ß√£o que exibe o ranking de todos os jogadores na tela a partir do arquivo de ranking.
 int exibe_ranking()
 {
     FILE *arq;
@@ -691,27 +692,54 @@ int exibe_ranking()
     return 1;
 
 }
-//FunÁ„o que salva as informaÁıes do jogo em um arquivo bin·rio.
-int salva_jogo(JOGO jogo)
+//Fun√ß√£o que salva as informa√ß√µes do jogo em um arquivo bin√°rio.
+int salva_jogo(JOGO *jogo)
 {
+    JOGO buffer;
     FILE *arq;
-    if(!(arq = fopen("jogo.bin","wb")))
+    if(!(arq = fopen("jogos_salvos.bin","wb")))
     {
         printf("Erro ao abrir o arquivo");
         return(0);
     }
     else
     {
-        fwrite(&jogo,sizeof(JOGO),1,arq);
+        fwrite(jogo,sizeof(JOGO),1,arq);
         fclose(arq);
         return(1);
     }
 
 }
-//FunÁ„o que inicia um novo jogo.
-void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], OGRO Ogro[])
+int carrega_jogo(JOGO *jogo, char nome_procurado[]){
+FILE *arq;
+JOGO buffer;
+arq = fopen("jogos_salvos.bin", "rb");
+if(!arq){
+    printf("Erro ao abrir o arquivo\n");
+    return 0;
+}
+else {
+    while(!feof(arq)){
+        if(fread(&buffer, sizeof(JOGO), 1, arq) == 1){
+                if(!strcmp(buffer.Jogador.nome_jogador, nome_procurado)){
+                     *jogo = buffer;
+                     return 1;
+                }
+                else{
+                    printf("Nao achamos nenhum jogador com esse nome");
+                    return 0;
+                }
+        }
+    }
+}
+fclose(arq);
+return 1;
+}
+
+//Fun√ß√£o que inicia um novo jogo.
+void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], OGRO Ogro[], JOGO *jogo)
 {
-    //D· valor ‡s vari·veis iniciais do jogo
+    //D√° valor √†s vari√°veis iniciais do jogo
     int tecla;
     clock_t tempo_ini, tempo_fim;
     Jogador->chaves_coletadas = 0;
@@ -729,7 +757,7 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
     escolher_modo_jogo(Jogador, listaagentes);
     clrscr();
 
-    tempo_ini = clock(); //Inicia o relÛgio do jogo.
+    tempo_ini = clock(); //Inicia o rel√≥gio do jogo.
 
     //Aqui se gera e desenha as estruturas do jogo.
     desenha_cenario();
@@ -741,11 +769,11 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
     desenha_CHAVEs(listachaves, Jogador, listaparedes);
     desenha_agentes(listaagentes, Jogador);
 
-    //ComeÁa o relÛgio do agente para movimentar de acordo com a velocidade determinada na dificuldade.
+    //Come√ßa o rel√≥gio do agente para movimentar de acordo com a velocidade determinada na dificuldade.
     comeco_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
     fim_agente = comeco_agente;
 
-    do //LaÁo de uma sess„o do jogo.
+    do //La√ßo de uma sess√£o do jogo.
     {
         testa_chaves(listachaves,Jogador);
         testa_agentes(listaagentes, Jogador);
@@ -756,17 +784,20 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
             movimenta_agentes(listaagentes, listachaves, listaparedes, Jogador);
             comeco_agente = fim_agente;
         }
-        //Aqui o programa recebe a tecla inserida pelo jogador e executa funÁıes de acordo.
+        //Aqui o programa recebe a tecla inserida pelo jogador e executa fun√ß√µes de acordo.
         if(kbhit())
         {
             tecla = getch();
+            if (tecla == 27){
+                salva_jogo(jogo);
+            }
             movimenta_jogador(Jogador, &tecla, listaparedes);
         }
         fim_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
     }
     while(Jogador->chaves_coletadas < Jogador->num_chaves && Jogador->vidas > 0);
 
-    //ApÛs uma sess„o do jogo acabar, ele finaliza o clock e gera o tempo de jogo do jogador
+    //Ap√≥s uma sess√£o do jogo acabar, ele finaliza o clock e gera o tempo de jogo do jogador
     tempo_fim = clock();
     Jogador->tempo = gera_tempo_jogo(tempo_ini, tempo_fim);
 
@@ -779,11 +810,73 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves
 
     mensagem_final(Jogador);
 }
-//FunÁ„o que mostra o menu inicial do jogo para o usu·rio.
-void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], OGRO Ogro[])
+void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE listaparedes[], OGRO Ogro[], JOGO *jogo)
+{
+    //D√° valor √†s vari√°veis iniciais do jogo
+    int tecla;
+    clock_t tempo_ini, tempo_fim;
+    double comeco_agente, fim_agente;
+
+    tempo_ini = clock(); //Inicia o rel√≥gio do jogo.
+
+    clrscr();
+    //Aqui se gera e desenha as estruturas do jogo.
+    desenha_cenario();
+    //desenha_ogro(Ogro);
+    gera_paredes(Jogador, listaparedes);
+    desenha_paredes(Jogador, listaparedes);
+    desenha_jogador(Jogador->posicao.x, Jogador->posicao.y);
+    desenha_placar(Jogador);
+    desenha_CHAVEs(listachaves, Jogador, listaparedes);
+    desenha_agentes(listaagentes, Jogador);
+
+    //Come√ßa o rel√≥gio do agente para movimentar de acordo com a velocidade determinada na dificuldade.
+    comeco_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
+    fim_agente = comeco_agente;
+
+    do //La√ßo de uma sess√£o do jogo.
+    {
+        testa_chaves(listachaves,Jogador);
+        testa_agentes(listaagentes, Jogador);
+
+        //Movimenta os agentes a cada X tempo, dependendo da velocidade escolhida pelo jogador, em milisegundos
+        if(fim_agente - comeco_agente >= listaagentes->velocidade)
+        {
+            movimenta_agentes(listaagentes, listachaves, listaparedes, Jogador);
+            comeco_agente = fim_agente;
+        }
+        //Aqui o programa recebe a tecla inserida pelo jogador e executa fun√ß√µes de acordo.
+        if(kbhit())
+        {
+            tecla = getch();
+            if (tecla == 27){
+                salva_jogo(jogo);
+            }
+            movimenta_jogador(Jogador, &tecla, listaparedes);
+        }
+        fim_agente = (double) clock () / (CLOCKS_PER_SEC / 1000);
+    }
+    while(Jogador->chaves_coletadas < Jogador->num_chaves && Jogador->vidas > 0);
+
+    //Ap√≥s uma sess√£o do jogo acabar, ele finaliza o clock e gera o tempo de jogo do jogador
+    tempo_fim = clock();
+    Jogador->tempo = gera_tempo_jogo(tempo_ini, tempo_fim);
+
+    //Se o jogador ganhou o jogo, ele salva o ranking.
+    if (Jogador->vidas > 0)
+    {
+        Jogador->ranking = adiciona_ranking(Jogador);
+        salva_ranking(*Jogador);
+    }
+
+    mensagem_final(Jogador);
+}
+//Fun√ß√£o que mostra o menu inicial do jogo para o usu√°rio.
+void menu(JOGO *jogo)
 {
     int opcao;
     int num_partidas = 0;
+    char nome_procurado[NOME];
     clrscr();
     printf("\t\t Resgate o Ogro\t\t\n");
     printf("\t\t Iniciar novo jogo(tecle 1)\t\t\n");
@@ -795,9 +888,9 @@ void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE l
     switch(opcao)
     {
     case 1: //Inicia um novo jogo.
-        do //Faz NUM_JOGOS n˙mero de sessıes do jogo antes de terminar.
+        do //Faz NUM_JOGOS n√∫mero de sess√µes do jogo antes de terminar.
         {
-            inicia_novo_jogo(Jogador, listaagentes, listachaves, listaparedes, Ogro);
+            inicia_novo_jogo(&jogo->Jogador, jogo->listaagentes, jogo->listachaves, jogo->listaparedes, jogo->Ogro, jogo);
             num_partidas++;
         }
         while(num_partidas < NUM_JOGOS);
@@ -805,7 +898,16 @@ void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE l
         exibe_ranking();
         break;
     case 2://Inicia um jogo carregado a partir do arquivo de jogos salvos.
-
+            puts("insira um nome para ser procurado");
+            fflush(stdin);
+            gets(nome_procurado);
+            carrega_jogo(jogo, nome_procurado);
+            if(carrega_jogo(jogo, nome_procurado) == 0){
+                printf("N√£o achamos esse nome");
+            }
+            else{
+            inicia_jogo_carregado(&jogo->Jogador, jogo->listaagentes, jogo->listachaves, jogo->listaparedes, jogo->Ogro, jogo);
+            }
         break;
 
     case 3://Exibe o ranking geral na tela.
@@ -818,19 +920,14 @@ void menu(JOGADOR *Jogador, AGENTE listaagentes[], CHAVE listachaves[], PAREDE l
         break;
     }
 }
-//LaÁo principal do programa.
+//La√ßo principal do programa.
 int main()
 {
-    //Inicializa as estruturas necess·rias para executar o programa.
+    //Inicializa as estruturas necess√°rias para executar o programa.
     srand(time(NULL));
-    JOGADOR Jogador;
-    AGENTE listaagentes[AGENTESMAX];
-    CHAVE listachaves[CHAVESMAX];
-    PAREDE listaparedes[PAREDESMAX];
-    OGRO Ogro[5];
-    //JOGO jogo;
+    JOGO jogo;
 
     //Chama o menu do jogo
-    menu(&Jogador, listaagentes, listachaves, listaparedes, Ogro);
+    menu(&jogo);
     return(0);
 }

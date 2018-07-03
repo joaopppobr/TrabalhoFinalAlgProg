@@ -648,6 +648,7 @@ void mensagem_final(JOGADOR *Jogador)
     }
 
     Sleep(3000);
+    getch();
 }
 //Função que gera o ranking no jogador dependo do modo de jogo escolhido por ele.
 int adiciona_ranking(JOGADOR Jogador)
@@ -851,11 +852,13 @@ void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], chave listac
     textcolor(BLACK);
     int tecla;
     int chavesbuffer = Jogador->num_chaves;
+    clock_t tempo_ini, tempo_fim;
+    int jogador_tempo_buffer = Jogador->tempo;
     Jogador->num_chaves = Jogador->num_chaves - Jogador->chaves_coletadas;
     double comeco_agente, fim_agente;
 
     clrscr();
-
+    tempo_ini = clock(); //Inicia o relógio do jogo.
     //Aqui se desenha as estruturas do jogo.
     desenha_cenario();
     desenha_torre_ogro(&Ogro, Torre);
@@ -886,7 +889,9 @@ void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], chave listac
             tecla = getch();
             if (tecla == 27)
             {
-                clrscr();
+               clrscr();
+                tempo_fim = clock();
+                Jogador->tempo = gera_tempo_jogo(tempo_ini, tempo_fim) + jogador_tempo_buffer;
                 salva_jogo(jogo);
                 menu_pausa(jogo);
             }
@@ -899,7 +904,18 @@ void inicia_jogo_carregado(JOGADOR *Jogador, AGENTE listaagentes[], chave listac
         }
     }
     while(testa_ogro(Ogro, Jogador) && Jogador->vidas > 0);
-    clrscr();
+
+    //Após uma sessão do jogo acabar, ele finaliza o clock e gera o tempo de jogo do jogador
+    tempo_fim = clock();
+    Jogador->tempo = gera_tempo_jogo(tempo_ini, tempo_fim) + jogador_tempo_buffer;
+
+    //Se o jogador ganhou o jogo, ele salva o ranking.
+    if (Jogador->vidas > 0)
+    {
+        Jogador->ranking = adiciona_ranking(*Jogador);
+        salva_ranking(*Jogador);
+    }
+
     mensagem_final(Jogador);
 }
 
@@ -951,7 +967,8 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], chave listachaves
     textcolor(BLACK);
     //Dá valor às variáveis iniciais do jogo
     int tecla;
-    clock_t tempo_ini, tempo_fim;
+    clock_t tempo_ini;
+    clock_t tempo_fim;
     Jogador->chaves_coletadas = 0;
     Jogador->vidas = 3;
     Jogador->posicao.x = 2 + rand() % (MAXX - 2);
@@ -1002,6 +1019,8 @@ void inicia_novo_jogo(JOGADOR *Jogador, AGENTE listaagentes[], chave listachaves
             if (tecla == 27)
             {
                 clrscr();
+                tempo_fim = clock();
+                Jogador->tempo = gera_tempo_jogo(tempo_ini, tempo_fim);
                 salva_jogo(jogo);
                 menu_pausa(jogo);
             }

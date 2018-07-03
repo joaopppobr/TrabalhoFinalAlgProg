@@ -61,3 +61,5 @@ jogo.bin
 TrabalhoFinalAlgProg.layout
 *.layout
 *.depend
+*.bin
+*.depend

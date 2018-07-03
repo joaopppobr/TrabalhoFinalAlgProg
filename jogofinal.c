@@ -11,11 +11,10 @@
 #include <math.h>
 #include <stddef.h>
 
-#define _TIME_H
 #define MAXX 80 //Limite X do cenário;
 #define MAXY 24 //Limite Y do cenário;
 #define NOME 20 // Tamanho máximo do nome do jogado;
-#define NUM_JOGOS 2 //Número de vezes que o loop de jogos roda;
+#define NUM_JOGOS 3 //Número de sessões de jogo por partida;
 #define NUM_SEGMENTOS 5 //Número de segmentos em cada parede do jogo;
 #define AGENTESMAX 20 //Número máximo de agentes permitidos no jogo;
 #define chaveSMAX 5 //Número máximo de chaves permitidos no jogo;
@@ -180,20 +179,17 @@ void desenha_placar(JOGADOR *Jogador)
     textbackground(7);
     textcolor(BLACK);
     gotoxy(3, MAXY+1);
-    switch(Jogador->modo_de_jogo)
+    if (Jogador->modo_de_jogo == 0) //Fácil
     {
-    case 0: //Fácil
         printf("Nome: %s \t\tchaves coletadas: %d \t\tVidas: %d \nModo de jogo: Facil", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
-        break;
-    case 1: //Difícil
+    }
+    if (Jogador->modo_de_jogo == 1) //Difícil
+    {
         printf("Nome: %s \t\tchaves coletadas: %d \t\tVidas: %d \nModo de jogo: Dificil", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
-        break;
-    case 2: //Muito Difícil
-        printf("Nome: %s \t\tchaves coletadas: %d \t\tVidas: %d \nModo de jogo: Muito Difícil", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
-        break;
-    case 3: //Impossível
-        printf("Nome: %s \t\tchaves coletadas: %d \t\tVidas: %d \nModo de jogo: Impossivel", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
-        break;
+    }
+    if (Jogador->modo_de_jogo == 2) //Muito Dificil
+    {
+        printf("Nome: %s \t\tchaves coletadas: %d \t\tVidas: %d \nModo de jogo: Muito Dificil", Jogador->nome_jogador, Jogador->chaves_coletadas, Jogador->vidas);
     }
 }
 //Função que gera e desenha os agentes em sua posição inicial no jogo.
@@ -601,7 +597,7 @@ void movimenta_agentes(AGENTE listaagentes[], chave listachaves[], PAREDE listap
 void escolher_modo_jogo(JOGADOR *Jogador, AGENTE *listaagentes)
 {
     printf("Escolha o modo de jogo:\n");
-    printf("0: facil ; 1: dificil ; 2: muito dificil ; 3: impossivel\n");
+    printf("0: facil ; 1: dificil ; 2: muito dificil\n");
     scanf("%d", &Jogador->modo_de_jogo);
 
     if (Jogador->modo_de_jogo == 0) //Fácil
@@ -624,13 +620,6 @@ void escolher_modo_jogo(JOGADOR *Jogador, AGENTE *listaagentes)
         Jogador->num_agentes = 8;
         Jogador->num_paredes = 7;
         listaagentes->velocidade = 200;
-    }
-    if (Jogador->modo_de_jogo == 3) //Impossível
-    {
-        Jogador->num_chaves = 5;
-        Jogador->num_agentes = 20;
-        Jogador->num_paredes = 8;
-        listaagentes->velocidade = 30;
     }
 }
 
@@ -663,20 +652,14 @@ void mensagem_final(JOGADOR *Jogador)
 //Função que gera o ranking no jogador dependo do modo de jogo escolhido por ele.
 int adiciona_ranking(JOGADOR Jogador)
 {
-    switch(Jogador.modo_de_jogo)
-    {
-    case 0: //Fácil. Possui x2 de multiplicador.
+    if (Jogador.modo_de_jogo == 0){//Fácil. Possui x2 de multiplicador.
         return ((30000 * 2)/ Jogador.tempo);
-        break;
-    case 1: //Difícil. Possui x3 de multiplicador.
+    }
+    if (Jogador.modo_de_jogo == 1){ //Difícil. Possui x3 de multiplicador.
         return ((30000*3) / Jogador.tempo);
-        break;
-    case 2: //Muito Difícil. Possui x4 de multiplicador.
+    }
+    if (Jogador.modo_de_jogo == 2){ //Muito Difícil. Possui x4 de multiplicador.
         return ((30000*4)/ Jogador.tempo);
-        break;
-    case 3: //Impossível. Possui x5 de multiplicador.
-        return ((30000*5)/ Jogador.tempo);
-        break;
     }
     return (30000 / Jogador.tempo);
 }
@@ -1111,6 +1094,7 @@ void menu(JOGO *jogo)
         printf("\t\t Nao seja atacado por guardas\t\t\n\n");
         printf("\t\t Jogos carregados no menu inicial nao dao direito a ranking\t\t\n\n");
         printf("\t\t Pressione 'Esc' para pausar e salvar o jogo\t\t\n\n");
+        printf("\t\t Dica: caso o mapa nao carregue corretamente, pause o jogo e volte a jogar\t\t\n\n");
         printf("\t\t Para voltar tecle 'Esc'\t\t\n\n");
         tecla = getch();
         if(tecla == 27)
